@@ -30,5 +30,12 @@ def user_login():
 def user_signup():
     return render_template("user_signup.html")
     
+@app.route("/string_reverse", methods=['GET','POST'])
+def string_reverse():
+    if request.method == 'POST':
+        string = request.form["string"]
+    return render_template("string_reverse.html")
+    
+    
 if __name__=='__main__':
     app.run(debug=True)
