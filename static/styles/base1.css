@@ -1,0 +1,17 @@
+body{
+    background-color:aliceblue;
+}
+.page-center{
+    margin-top: 40vh;
+}
+.card{
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 2px;
+    padding:7px;
+}
+.card-header{
+    background-color: lightcyan;
+}
+.center-align{
+    text-align: center;
+}
