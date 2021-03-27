@@ -11,7 +11,6 @@ def str_rev_api(string):
     data = res.read()
     return data.decode("utf-8")
 
-
 #current weather data
 def weather_api(city):
     conn = http.client.HTTPSConnection("community-open-weather-map.p.rapidapi.com")
@@ -24,7 +23,6 @@ def weather_api(city):
     res = conn.getresponse()
     data = res.read()
     return data.decode("utf-8")
-
 
 #instagram account info
 def  insta_api(username):
