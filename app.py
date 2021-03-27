@@ -1,6 +1,6 @@
 from flask import Flask,render_template,url_for,flash,redirect,request,session ,jsonify,send_file,Response
 from flask_sqlalchemy import SQLAlchemy
-
+from rapidapi import str_rev_api,translate_api,weather_api,insta_api
 app = Flask(__name__)
 # 'mysql://username:password@localhost/dbname'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://postgres:iamstillworthy@localhost/esb'
@@ -32,10 +32,39 @@ def user_signup():
     
 @app.route("/string_reverse", methods=['GET','POST'])
 def string_reverse():
+    out = "Output will be shown here."
     if request.method == 'POST':
         string = request.form["string"]
-    return render_template("string_reverse.html")
+        out = str_rev_api(string)
+        return render_template("string_reverse.html",out = out)
+    return render_template("string_reverse.html",out = out)
     
+@app.route("/instagram", methods=['GET','POST'])
+def instagram():
+    out = "Output will be shown here."
+    if request.method == 'POST':
+        string = request.form["string"]
+        out = insta_api(string)
+        return render_template("insta.html",out = out)
+    return render_template("insta.html",out = out)
     
+@app.route("/weather", methods=['GET','POST'])
+def weather():
+    out = "Output will be shown here."
+    if request.method == 'POST':
+        string = request.form["string"]
+        out = weather_api(string)
+        return render_template("weather.html",out = out)
+    return render_template("weather.html",out = out)
+
+@app.route("/translator", methods=['GET','POST'])
+def translator():
+    out = "Output will be shown here."
+    if request.method == 'POST':
+        string = request.form["string"]
+        out = translate_api(string)
+        return render_template("detect.html",out = out)
+    return render_template("detect.html",out = out)
+
 if __name__=='__main__':
     app.run(debug=True)

@@ -11,14 +11,25 @@
         <div class="sidenav">
             <p class="center-align logo"><img src="../static/esb.png"></p>
             <a href="{{url_for('instagram')}}">Instagram API</a>
-            <a href="{{url_for('translator')}}">Google Translate API</a>
+            <a class="active" href="{{url_for('translator')}}">Google Translate API</a>
             <a href="{{url_for('weather')}}">Open Weather API</a>
             <a href="{{url_for('string_reverse')}}">String Reverse API</a>
             <a href="#">Manage users</a>
         </div>
 
         <div class="container-fluid main">
-            Admin dashboard
+            <form action="{{url_for('translator')}}" method='POST'>
+                <div class="form-group m-3">
+                    <label for="string">Enter the Sentence</label><br>
+                    <input type="text" name="string" id="string" placeholder="Enter the Sentence">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-info">Send</button>
+                </div>
+            </form>
+            <div>
+                {{out}}
+            </div>
         </div>
         <!-- JavaScript Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
