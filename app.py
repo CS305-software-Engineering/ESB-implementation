@@ -26,7 +26,11 @@ db_connection_name = 'warm-skill-309311:us-central1:esb-implementation'
 
 def open_connection():
     unix_socket = '/cloudsql/{}'.format(db_connection_name)
-    conn1 = pymysql.connect(user='root', password='root', unix_socket=unix_socket, db='ESB', cursorclass=pymysql.cursors.DictCursor)
+    conn1 = pymysql.connect(user='root',
+                            password='root',
+                            unix_socket=unix_socket,
+                            db='ESB',
+                            cursorclass=pymysql.cursors.DictCursor)
     return conn1
 
 
@@ -38,7 +42,8 @@ admin["password"] = "pass123"
 @app.route("/", methods=['GET', 'POST'])
 def welcome_admin():
     if request.method == 'POST':
-        if request.form["username"] == admin["username"] and request.form["password"] == admin["password"]:
+        if request.form["username"] == admin["username"] and request.form[
+                "password"] == admin["password"]:
             return redirect(url_for('admin_dashboard'))
     return render_template("admin_login.html")
 
@@ -58,7 +63,9 @@ def user_login():
 def user_signup():
     conn = open_connection()
     with conn.cursor() as cursor:
-        res = cursor.execute('create table IF NOT EXISTS Users(Username text primary key,UserPassword text not null,UserRole text not null,UserPriority int not null)')
+        res = cursor.execute(
+            'create table IF NOT EXISTS Users(Username text primary key,UserPassword text not null,UserRole text not null,UserPriority int not null)'
+        )
     return render_template("user_signup.html")
 
 
