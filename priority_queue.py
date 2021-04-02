@@ -45,6 +45,8 @@ RequestID_to_json_data = {}
 running = True
 while running:
     # precent hanging in this location
+    # called non blocking mode
+    # check documentation
     # https://stackoverflow.com/a/20290016/13198229
     # if works then no need for shared memory and mutex
     msg = conn_a2pq.recv()
