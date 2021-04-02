@@ -1,9 +1,22 @@
 from flask import Flask,render_template,url_for,flash,redirect,request,session ,jsonify,send_file,Response
 from flask_sqlalchemy import SQLAlchemy
 from rapidapi import str_rev_api,translate_api,weather_api,insta_api
+from sqlalchemy import create_engine
+
 app = Flask(__name__)
-# 'mysql://username:password@localhost/dbname'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://postgres:iamstillworthy@localhost/esb'
+
+# Google Cloud SQL (change this accordingly)
+PASSWORD ="root"
+PUBLIC_IP_ADDRESS ="35.192.77.35"
+DBNAME ="ESB"
+PROJECT_ID ="warm-skill-309311"
+INSTANCE_NAME ="esb-implementation"
+  
+# configuration
+app.config["SECRET_KEY"] = "pzaegniyzfvphtliybzmclacmx"
+app.config["SQLALCHEMY_DATABASE_URI"]= f'mysql+mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}/{DBNAME}?unix_socket=/cloudsql/{PROJECT_ID}:{INSTANCE_NAME}'
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
+engine = create_engine('mysql+mysqldb://root:root@35.192.77.35/ESB?unix_socket=/cloudsql/warm-skill-309311:us-central1:esb-implementation')
 db = SQLAlchemy(app)
 
 admin = {}
@@ -28,6 +41,8 @@ def user_login():
 
 @app.route("/user_signup")
 def user_signup():
+    with engine.connect() as connection:
+        result = connection.execute("create table IF NOT EXISTS Users(Username text primary key,UserPassword text not null,UserRole text not null,UserPriority int not null)")
     return render_template("user_signup.html")
     
 @app.route("/string_reverse", methods=['GET','POST'])
