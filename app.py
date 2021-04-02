@@ -18,7 +18,8 @@ admin["password"] = "pass123"
 @app.route("/", methods=['GET', 'POST'])
 def welcome_admin():
     if request.method == 'POST':
-        if request.form["username"] == admin["username"] and request.form["password"] == admin["password"]:
+        if request.form["username"] == admin["username"] and request.form[
+                "password"] == admin["password"]:
             return redirect(url_for('admin_dashboard'))
     return render_template("admin_login.html")
 
