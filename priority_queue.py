@@ -86,9 +86,12 @@ while running:
             # after sending data, processor will be busy
             processor_busy = True
 
+        # if priority_queue is empty and processor no busy and connection from adapter has already been terminated
+        # then close the communication to processing module
         elif not conn_a2pq_active:
             conn_pq2p.send("terminate")
             conn_pq2p.close()
+            running = False
             break
 
     if conn_pq2p.poll():
