@@ -26,6 +26,7 @@ def weather_api(city):
     conn.request("GET", ip, headers=headers)
     res = conn.getresponse()
     data = res.read()
+    status=res.status
     return data.decode("utf-8")
 
 
@@ -40,6 +41,7 @@ def insta_api(username):
     conn.request("GET", ip, headers=headers)
     res = conn.getresponse()
     data = res.read()
+    status=res.status
     return data.decode("utf-8")
 
 
@@ -57,4 +59,5 @@ def translate_api(payload):
                  headers)
     res = conn.getresponse()
     data = res.read()
+    status=res.status
     return data.decode("utf-8")
