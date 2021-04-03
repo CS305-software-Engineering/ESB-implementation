@@ -7,8 +7,16 @@ from mysql.connector.constants import ClientFlag
 app = Flask(__name__)
 app.secret_key = ';\x01\x03A\x7f\x1d\xa8\x9e\x06\xf3\xf2m\x10"\xea\x99\x97\'\xf3\xc3\x0fQa\xbc'
 #### DATABASE CONNECTION PART######
-config = {'user': 'root', 'password': 'root', 'host': '35.192.77.35', 'database': 'ESB', 'client_flags': [
-    ClientFlag.SSL], 'ssl_ca': 'ssl/server-ca.pem', 'ssl_cert': 'ssl/client-cert.pem', 'ssl_key': 'ssl/client-key.pem'}
+config = {
+    'user': 'root',
+    'password': 'root',
+    'host': '35.192.77.35',
+    'database': 'ESB',
+    'client_flags': [ClientFlag.SSL],
+    'ssl_ca': 'ssl/server-ca.pem',
+    'ssl_cert': 'ssl/client-cert.pem',
+    'ssl_key': 'ssl/client-key.pem'
+}
 
 cnxn = mysql.connector.connect(**config)
 #####################################
@@ -23,7 +31,8 @@ def welcome_admin():
         return redirect(url_for('admin_dashboard'))
 
     if "username" in session:
-        return redirect(url_for('user_dashboard', username=session["username"]))
+        return redirect(url_for('user_dashboard',
+                                username=session["username"]))
 
     if request.method == 'POST':
         if request.form["username"] == admin["username"] and request.form[
@@ -44,7 +53,11 @@ def admin_dashboard():
         logs = cursor.fetchall()
 
         print(pending_users)
-        return render_template("admin_dashboard.html", logs=logs, n=len(logs), pending_users=pending_users, m=len(pending_users))
+        return render_template("admin_dashboard.html",
+                               logs=logs,
+                               n=len(logs),
+                               pending_users=pending_users,
+                               m=len(pending_users))
     else:
         return redirect(url_for("welcome_admin"))
 
@@ -53,14 +66,14 @@ def admin_dashboard():
 def confirm_user(username):
     if "username" in session and session["username"] == admin["username"]:
         cursor = cnxn.cursor()
-        cursor.execute(
-            'select * from SignupConfirmation where username = %s', (str(username),))
+        cursor.execute('select * from SignupConfirmation where username = %s',
+                       (str(username), ))
         user = cursor.fetchall()
         print(user)
 
         cursor = cnxn.cursor()
-        cursor.execute(
-            'DELETE from SignupConfirmation where username = %s', (str(username),))
+        cursor.execute('DELETE from SignupConfirmation where username = %s',
+                       (str(username), ))
         cnxn.commit()
         print(cursor.rowcount)
 
@@ -69,8 +82,9 @@ def confirm_user(username):
         priority = find_priority(role)
 
         cursor = cnxn.cursor()
-        cursor.execute('INSERT into Users(Username,UserPassword,UserRole,UserPriority) values(%s,%s,%s,%s)', (str(
-            username), str(password), str(role), priority))
+        cursor.execute(
+            'INSERT into Users(Username,UserPassword,UserRole,UserPriority) values(%s,%s,%s,%s)',
+            (str(username), str(password), str(role), priority))
         cnxn.commit()
         return redirect(url_for('admin_dashboard'))
     else:
@@ -81,8 +95,8 @@ def confirm_user(username):
 def delete_user(username):
     if "username" in session and session["username"] == admin["username"]:
         cursor = cnxn.cursor()
-        cursor.execute(
-            'DELETE from SignupConfirmation where username = %s', (str(username),))
+        cursor.execute('DELETE from SignupConfirmation where username = %s',
+                       (str(username), ))
         cnxn.commit()
         return redirect(url_for('admin_dashboard'))
     else:
@@ -104,8 +118,8 @@ def user_login():
         passwd = request.form["password"]
 
         cursor = cnxn.cursor()
-        cursor.execute(
-            'select * from Users where username = %s', (str(username),))
+        cursor.execute('select * from Users where username = %s',
+                       (str(username), ))
         user = cursor.fetchall()
 
         if user[0][1] == passwd:
@@ -138,7 +152,8 @@ def user_signup():
         role = request.form["role"]
         cursor = cnxn.cursor()
         cursor.execute(
-            'INSERT into SignupConfirmation(Username,UserPassword,UserRole) values(%s,%s,%s)', (username, passwd, role))
+            'INSERT into SignupConfirmation(Username,UserPassword,UserRole) values(%s,%s,%s)',
+            (username, passwd, role))
         cnxn.commit()
 
     return render_template("user_signup.html", unames=unames)
