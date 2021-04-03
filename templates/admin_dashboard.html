@@ -66,6 +66,7 @@
                                 <th scope="col">Username</th>
                                 <th scope="col">Role</th>
                                 <th scope="col">Confirm</th>
+                                <th scope="col">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,6 +75,7 @@
                                     <td>{{pending_users[i][0]}}</td>
                                     <td>{{pending_users[i][2]}}</td>
                                     <td><a href="{{url_for('confirm_user',username=pending_users[i][0])}}">Confirm</a></td>
+                                    <td><a href="{{url_for('delete_user',username=pending_users[i][0])}}">Delete </a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
