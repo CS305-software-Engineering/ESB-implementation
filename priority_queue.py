@@ -4,6 +4,7 @@
 from multiprocessing.connection import Client, Listener
 import json
 import sys
+from max_heap import max_heap
 
 # // TODO => DONE take command line args to decide the port number of listener
 # this is for one of the 5 branches in the flow
@@ -16,6 +17,7 @@ import sys
 #     "translate": 6003,
 #     "C2C": 6004
 # }
+
 listener_port = int(sys.argv[1])
 processor_port = int(sys.argv[2])
 
@@ -40,7 +42,10 @@ processor_busy = False
 # TODO maintain a priority queue on RequestPriority and RequestID
 # TODO maintain a map from RequestID to Json DATA
 
-RequestID_to_json_data = {}
+RequestID_to_json_data = {}  # map
+# top => max(10 * request_priority + requestID, -RequestID)
+# since requestIDs are generated serially, hence this will prevent starvation
+priority_queue = max_heap
 
 running = True
 while running:
@@ -49,6 +54,7 @@ while running:
     # check documentation
     # https://stackoverflow.com/a/20290016/13198229
     # if works then no need for shared memory and mutex
+    # check polling method in official documenattion
     msg = conn_a2pq.recv()
     if msg == "terminate":
         pass  # TODO
