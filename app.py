@@ -7,7 +7,8 @@ from mysql.connector.constants import ClientFlag
 app = Flask(__name__)
 
 #### DATABASE CONNECTION PART######
-config = {'user': 'root', 'password': 'root', 'host': '35.192.77.35', 'database': 'ESB', 'client_flags': [ClientFlag.SSL], 'ssl_ca': 'ssl/server-ca.pem', 'ssl_cert': 'ssl/client-cert.pem', 'ssl_key': 'ssl/client-key.pem'}
+config = {'user': 'root', 'password': 'root', 'host': '35.192.77.35', 'database': 'ESB', 'client_flags': [
+    ClientFlag.SSL], 'ssl_ca': 'ssl/server-ca.pem', 'ssl_cert': 'ssl/client-cert.pem', 'ssl_key': 'ssl/client-key.pem'}
 
 cnxn = mysql.connector.connect(**config)
 #####################################
@@ -30,34 +31,59 @@ def admin_dashboard():
     cursor = cnxn.cursor()
     cursor.execute('select * from SignupConfirmation')
     pending_users = cursor.fetchall()
+
+    cursor.execute("SELECT * from AckLogs")
+    logs = cursor.fetchall()
+
     print(pending_users)
-    return render_template("admin_dashboard.html",pending_users=pending_users,m=len(pending_users))
+    return render_template("admin_dashboard.html", logs=logs, n=len(logs), pending_users=pending_users, m=len(pending_users))
+
 
 @app.route("/confirm_user/<username>", methods=['GET', 'POST'])
 def confirm_user(username):
     cursor = cnxn.cursor()
-    cursor.execute('select * from SignupConfirmation where username = %s',(str(username),))
+    cursor.execute(
+        'select * from SignupConfirmation where username = %s', (str(username),))
     user = cursor.fetchall()
     print(user)
-    
+
     cursor = cnxn.cursor()
-    cursor.execute('DELETE from SignupConfirmation where username = %s',(str(username),))
+    cursor.execute(
+        'DELETE from SignupConfirmation where username = %s', (str(username),))
     cnxn.commit()
     print(cursor.rowcount)
-    
-    
+
     password = user[0][1]
     role = user[0][2]
     priority = find_priority(role)
-    
+
     cursor = cnxn.cursor()
-    cursor.execute('INSERT into Users(Username,UserPassword,UserRole,UserPriority) values(%s,%s,%s,%s)', (str(username), str(password), str(role),priority))
+    cursor.execute('INSERT into Users(Username,UserPassword,UserRole,UserPriority) values(%s,%s,%s,%s)', (str(
+        username), str(password), str(role), priority))
     cnxn.commit()
     return redirect(url_for('admin_dashboard'))
-    
-@app.route("/user_login")
-def user_login():
 
+
+@app.route("/user_dashboard/<username>")
+def user_dashboard(username):
+    return render_template("user_dashboard.html")
+
+
+@app.route("/user_login", methods=['GET', 'POST'])
+def user_login():
+    if request.method == 'POST':
+        username = request.form["username"]
+        passwd = request.form["password"]
+
+        cursor = cnxn.cursor()
+        cursor.execute(
+            'select * from Users where username = %s', (str(username),))
+        user = cursor.fetchall()
+
+        if user[0][1] == passwd:
+            return redirect(url_for('user_dashboard', username=username))
+        else:
+            return redirect(url_for('user_login'))
     return render_template("user_login.html")
 
 
@@ -68,7 +94,8 @@ def user_signup():
         passwd = request.form["password"]
         role = request.form["role"]
         cursor = cnxn.cursor()
-        cursor.execute('INSERT into SignupConfirmation(Username,UserPassword,UserRole) values(%s,%s,%s)', (username, passwd, role))
+        cursor.execute(
+            'INSERT into SignupConfirmation(Username,UserPassword,UserRole) values(%s,%s,%s)', (username, passwd, role))
         cnxn.commit()
 
     return render_template("user_signup.html")
