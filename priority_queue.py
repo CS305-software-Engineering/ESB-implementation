@@ -52,34 +52,28 @@ priority_queue = max_heap
 
 running = True
 while running:
-    # prevent hanging in this location
-    # called non blocking mode
-    # check documentation
-    # https://stackoverflow.com/a/20290016/13198229
-    # if works then no need for shared memory and mutex
-    # check polling method in official documenattion
-
-    # only do if something is present to receive
+    # for active adapter connection, keep receiving data
     if conn_a2pq_active:
-        msg = conn_a2pq.recv()  # make it unblockable
-        if msg == "terminate":  # continue while the pq is not empty
-            conn_a2pq_active = False
-            conn_a2pq.close()
-            continue
+        # only do if something is present to receive
+        if conn_a2pq.poll():  # to make it unblockale
+            msg = conn_a2pq.recv()
+            if msg == "terminate":  # continue while the pq is not empty
+                conn_a2pq_active = False
+                conn_a2pq.close()
+                continue
 
-        data = msg  # this is a json object
+            data = msg  # this is a json object
 
-        # insert into map
-        RequestID_to_json_data[data["RequestID"]] = data
-        # insert into priority_queue
-        RequestPriority = data["RequestPriority"]
-        RequestID = data["RequestID"]
+            # insert into map
+            RequestID_to_json_data[data["RequestID"]] = data
+            # insert into priority_queue
+            RequestPriority = data["RequestPriority"]
+            RequestID = data["RequestID"]
 
-        # to prevent starvation use RequestID also
-        priority_queue.push([10 * RequestPriority + RequestID, -RequestID])
+            # to prevent starvation use RequestID also
+            priority_queue.push([10 * RequestPriority + RequestID, -RequestID])
 
     # if queue.size then pass the data to processing module if processing module is not busy
-    # start mutex
     if not processor_busy:
         if not priority_queue.empty():
             # take the highest priority process
@@ -89,18 +83,18 @@ while running:
             conn_pq2p.send(RequestID_to_json_data[TopRequestID])
             # remove top request from map
             RequestID_to_json_data.pop(TopRequestID)
-            # TODO
-            processor_busy = True  # after sending data, processor will be busy
-        # mutex close
+            # after sending data, processor will be busy
+            processor_busy = True
 
         elif not conn_a2pq_active:
             conn_pq2p.send("terminate")
             conn_pq2p.close()
             break
 
-    msg = conn_pq2p.recv()  # make it non blocking
-    if (msg == "free"):
-        processor_busy = False
+    if conn_pq2p.poll():
+        msg = conn_pq2p.recv()  # make it non blocking
+        if (msg == "free"):
+            processor_busy = False
 
 # priority_queue will keep on receiving requests from adapter.py
 # but will send data to processor only if it is free to do so
