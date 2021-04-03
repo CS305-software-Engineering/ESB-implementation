@@ -7,5 +7,5 @@ The project consists of the implementation of an Enterprise Service Bus that fac
 3. [Low-Level Design Document ](https://github.com/CS305-software-Engineering/ESB-implementation/wiki/Low-Level-Design-Document)
 
 ### Instrutions to run the project
-1. run pip3 install requirements. txt
+1. run pip3 install -r requirements.txt
 2. run python3 app.py
