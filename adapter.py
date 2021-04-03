@@ -41,7 +41,6 @@ while running:
         conn_s2a.close()
         running = False
 
-        conn_s2a.close()
         for conn in conn_a2pq.values():
             # TODO may raise a ValueError exception if data too large to pickel
             conn.send("terminate")
