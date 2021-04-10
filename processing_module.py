@@ -3,11 +3,11 @@ import json
 import sys
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
 input_ports={
-    "instagram"=8001,
-    "weather"=8002,
-    "translate"=8003,
-    "reverse"=8004
-    "c2c"=8005
+    "instagram":8001,
+    "weather":8002,
+    "translate":8003,
+    "reverse":8004,
+    "c2c":8005
 }
 
 processor_port = int(sys.argv[1])
@@ -55,6 +55,9 @@ while running:
         elif processor_port==input_ports["c2c"]:  #client to client API
             client_message = d['Payload'] #check if client is active
             d['Api_response'] = client_message
+        else:
+            print("check input port")
+        
             
         msg = json.dumps(d)  #sending message to dispatcher
         conn_2dp.send(msg)  # is api_reponse a json object
