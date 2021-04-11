@@ -2,12 +2,12 @@ from multiprocessing.connection import Listener, Client
 import json
 import sys
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
-input_ports={
-    "instagram":8001,
-    "weather":8002,
-    "translate":8003,
-    "reverse":8004,
-    "c2c":8005
+input_ports = {
+    "instagram": 8001,
+    "weather": 8002,
+    "translate": 8003,
+    "reverse": 8004,
+    "c2c": 8005
 }
 
 processor_port = int(sys.argv[1])
@@ -20,6 +20,7 @@ while running:
     print('connection accepted from', listener.last_accepted)
     msg = conn_2ia.recv()
     if msg == 'terminate':
+        conn_2dp.send('terminate')
         conn_2ia.close()
         running = False
     else:
@@ -27,40 +28,36 @@ while running:
         # create client to seng to dispacter
         # close the client connection
         # close this connection
-        d = json.loads(msg)
-        if processor_port==input_ports["instagram"]:  #call instagram api
-            username = d['Payload']
+        message = json.loads(msg)
+        if processor_port == input_ports["instagram"]:  # call instagram api
+            username = message['Payload']
             Api_response = insta_api(username)
-            d['Api_response'] = Api_response
-            
+            message['Api_response'] = Api_response
 
-        elif processor_port==input_ports["weather"]: #call weather api
-            location = d['Payload']
+        elif processor_port == input_ports["weather"]:  # call weather api
+            location = message['Payload']
             Api_response = weather_api(location)
-            d['Api_response'] = Api_response
-            
+            message['Api_response'] = Api_response
 
-        elif processor_port==input_ports["translate"]: #call google translate api
-            string = d['Payload']
+        # call google translate api
+        elif processor_port == input_ports["translate"]:
+            string = message['Payload']
             Api_response = translate_api(string)
-            d['Api_response'] = Api_response
-            
+            message['Api_response'] = Api_response
 
-        elif processor_port==input_ports["reverse"]:  #call string_reverse api
-            string = d['Payload']
+        # call string_reverse api
+        elif processor_port == input_ports["reverse"]:
+            string = message['Payload']
             Api_response = translate_api(string)
-            d['Api_response'] = Api_response
-            
+            message['Api_response'] = Api_response
 
-        elif processor_port==input_ports["c2c"]:  #client to client API
-            client_message = d['Payload'] #check if client is active
-            d['Api_response'] = client_message
+        elif processor_port == input_ports["c2c"]:  # client to client API
+            client_message = message['Payload']  # check if client is active
+            message['Api_response'] = client_message
         else:
             print("check input port")
-        
-            
-        msg = json.dumps(d)  #sending message to dispatcher
-        conn_2dp.send(msg)  # is api_reponse a json object
-        
+        msg = json.dumps(message)  # sending message to dispatcher
+        conn_2dp.send(msg)
+
 conn_2dp.close()
 listener.close()
