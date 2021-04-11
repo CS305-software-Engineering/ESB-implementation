@@ -1,4 +1,4 @@
-# one adaptor parses the information and forwards to necessary priority_queues
+# one adapter parses the information and forwards to necessary priority_queues
 # this particular program will have 5 instances
 
 from multiprocessing.connection import Client, Listener
@@ -71,7 +71,7 @@ while running:
             RequestID = data["RequestID"]
 
             # to prevent starvation use RequestID also
-            priority_queue.push([10 * RequestPriority + RequestID, -RequestID])
+            priority_queue.push([10 * RequestPriority - RequestID, -RequestID])
 
     # if queue.size then pass the data to processing module if processing module is not busy
     if not processor_busy:
