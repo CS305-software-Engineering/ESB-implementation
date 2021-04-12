@@ -10,7 +10,6 @@
 from multiprocessing.connection import Listener, Client
 import json
 
-# TODO decide the port numbers
 listener_port = 6000
 # dictionary containing port numbers for different pq
 port_numbers = {
@@ -35,14 +34,12 @@ for key, value in port_numbers.items():
 running = True
 while running:
     # data accepted from http server
-    # TODO  Raises EOFError if there is nothing left to receive and the other end was closed
     msg = conn_s2a.recv()
     if msg == "terminate":
         conn_s2a.close()
         running = False
 
         for conn in conn_a2pq.values():
-            # TODO may raise a ValueError exception if data too large to pickel
             conn.send("terminate")
             conn.close()  # close the subsequent connections to pqs
 
@@ -55,11 +52,9 @@ while running:
     Receiver = data["Receiver"]
 
     # forward data to corresponding priority queue
-    # TODO may raise a ValueError exception if data too large to pickel
     conn_a2pq[Receiver].send(data)
 
 # data received from HTTP server
-
 # RequestID
 # Username
 # TypeofRequest - API for API call, C2C for Client to Client communication
