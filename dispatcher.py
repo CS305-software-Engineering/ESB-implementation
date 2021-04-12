@@ -14,11 +14,11 @@ http_port = int(sys.argv[2])
 listener = Listener(('0.0.0.0', listener_port), authkey=b'secret password')
 sender = Client(('0.0.0.0', http_port), authkey=b'secret password')
 running = True
+con = listener.accept()
 while running:
-    con = listener.accept()
     msg = con.recv()
     print(msg)
-    if msg == "terminate":
+    if msg == 'terminate':
         con.close()
         sender.send(msg)
         sender.close()

@@ -1,7 +1,10 @@
 from multiprocessing.connection import Listener
 import json
+from socket import *
 
-listener = Listener(('localhost', 6003), authkey=b'secret password')
+sock = socket()
+sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+listener = Listener(('localhost', 6011), authkey=b'secret password')
 running = True
 while running:
     conn = listener.accept()

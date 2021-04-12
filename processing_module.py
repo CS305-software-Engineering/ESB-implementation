@@ -16,8 +16,8 @@ dispatcher_port = int(sys.argv[2])
 listener = Listener(('0.0.0.0', processor_port), authkey=b'secret password')
 conn_2dp = Client(('0.0.0.0', dispatcher_port), authkey=b'secret password')
 running = True
+conn_2ia = listener.accept()
 while running:
-    conn_2ia = listener.accept()
     print('connection accepted from', listener.last_accepted)
     msg = conn_2ia.recv()
     if msg == 'terminate':
