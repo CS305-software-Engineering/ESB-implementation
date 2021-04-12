@@ -6,18 +6,6 @@ import json
 import sys
 from max_heap import *
 
-# // TODO => DONE take command line args to decide the port number of listener
-# this is for one of the 5 branches in the flow
-# TODO decide the port numbers
-# listener_port = 6000
-# # dictionary containing port numbers for different processing modules
-# port_numbers = {
-#     "instagram": 6001,
-#     "weather": 6002,
-#     "translate": 6003,
-#     "C2C": 6004
-# }
-
 listener_port = int(sys.argv[1])
 processor_port = int(sys.argv[2])
 
@@ -32,21 +20,11 @@ conn_a2pq_active = True
 # make connection to processing module (maybe not needed)
 conn_pq2p = Client(('localhost', processor_port), authkey=b'secret password')
 
-# listener_p2pq = Listener(('localhost', processor_port),
-#                          authkey=b'secret password')
-
-# for checking if the processor is busy or not this is needed
-# maybe not
-# conn_p2pq = listener_p2pq.accept()
 processor_busy = False
-# If not this then try to use shared memory to modify this processor_busy variable
-
-# // TODO => DONE maintain a priority queue on RequestPriority and RequestID
-# // TODO => DONE maintain a map from RequestID to Json DATA
 
 RequestID_to_json_data = {}  # map
 
-# top => max(10 * request_priority + requestID, -RequestID)
+# top => max(10 * request_priority - requestID, -RequestID)
 # since requestIDs are generated serially, hence this will prevent starvation
 priority_queue = max_heap
 
