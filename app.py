@@ -2,6 +2,7 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session, jsonify, send_file, Response
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
 from utils import *
+import bcrypt
 import mysql.connector
 from mysql.connector.constants import ClientFlag
 
@@ -161,7 +162,7 @@ def user_login():
             return redirect(url_for('user_login'))
         
         # else check if passwd matches or not
-        if user[0][1] == passwd:
+        if bcrypt.check_password_hash(user[0][1], passwd):
             # if yes then set the cookies and redirect to dashboard
             session["username"] = username
             return redirect(url_for('user_dashboard', username=username))
@@ -194,7 +195,7 @@ def user_signup():
     if request.method == 'POST':
         # storing form data on POST
         username = request.form["username"]
-        passwd = request.form["password"]
+        passwd = bcrypt.generate_password_hash(request.form["password"]) 
         role = request.form["role"]
         cursor = cnxn.cursor()
         # inserting the user data in SignupConfirmation table
