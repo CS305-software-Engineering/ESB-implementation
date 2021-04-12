@@ -1,4 +1,5 @@
 from multiprocessing.connection import Listener, Client
+from socket import *
 import json
 import sys
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
