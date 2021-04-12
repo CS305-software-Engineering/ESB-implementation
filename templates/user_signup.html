@@ -34,6 +34,7 @@
 <script>
     var unames = {{ unames | tojson }};
     alertbox = document.getElementById("alertbox");
+    // a function that will alert user if he/she is typing a username already existing
     function check(val){
         var flag=0;
         for(var i=0;i<unames.length;i++){
