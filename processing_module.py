@@ -12,8 +12,8 @@ input_ports = {
 
 processor_port = int(sys.argv[1])
 dispatcher_port = int(sys.argv[2])
-listener = Listener(('locahost', processor_port), authkey=b'secret password')
-conn_2dp = Client(('localhost', dispatcher_port), authkey=b'secret password')
+listener = Listener(('0.0.0.0', processor_port), authkey=b'secret password')
+conn_2dp = Client(('0.0.0.0', dispatcher_port), authkey=b'secret password')
 running = True
 while running:
     conn_2ia = listener.accept()
