@@ -206,7 +206,8 @@ def user_login():
         user = cursor.fetchall()
 
         # if no such users -> invalid credentials -> login again
-        if(user.count == 0):
+        print(len(user))
+        if(len(user) == 0):
             return redirect(url_for('user_login'))
         
         # else check if passwd matches or not
