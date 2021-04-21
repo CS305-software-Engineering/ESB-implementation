@@ -6,14 +6,16 @@ create table IF NOT EXISTS Users(
 	Username varchar(100) primary key,
 	UserPassword varchar(100) not null,
 	UserRole varchar(100) not null,
-	UserPriority int not null
+	UserPriority int not null,
+	Email varchar(500) not null
 )
 
  -- users waiting for confirmation after signup from the admin
 create table IF NOT EXISTS SignupConfirmation(
 	Username varchar(100) primary key,
 	UserPassword varchar(100) not null,
-	UserRole varchar(100) not null
+	UserRole varchar(100) not null,
+	Email varchar(500) not null
 )
 
  -- logs for each request
@@ -26,7 +28,7 @@ create table IF NOT EXISTS AckLogs(
 	-- API Call / Client to client communication
 	Receiver varchar(100) not null,
 	-- API name / Receiver client
-	RequestPayload varchar(21845) not null,
+	RequestPayload text not null,
 	-- if text then include, for file transfer use the file name
 	InitialTimestamp timestamp not null,
 	-- time when request arrives at the HTTP server from a user client

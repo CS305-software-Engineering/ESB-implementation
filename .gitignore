@@ -131,3 +131,7 @@ dmypy.json
 # vscode
 *.vscode/
 *.code-workspace
+
+#
+env
+__pycache__

@@ -1,7 +1,8 @@
-{% extends "base1.html" %}
+{% extends "base.html" %}
 {% block content %}
 <div class="d-flex justify-content-center page-center">
     <div class="card">
+        <p class="center-align logo" style="background-color:#5fc2f9;"><img src="../static/esb.png"></p>
         <div class="card-header">
             <b>User Signup</b>
         </div>
@@ -15,11 +16,17 @@
                 </div>
                 <div class="form-group m-3">
                     <label for="password">Password</label><br>
-                    <input type="password" name ="password" id="password" placeholder="Password">
+                    <input onkeyup="passwd_strength(this.value)" type="password" name ="password" id="password" placeholder="Password"><br>
+                    <small style="color:red" id="display"></small><br>
+                    <progress max="100" value="0" id="meter"></progress>
                 </div>
                 <div class="form-group m-3">
                     <label for="role">Role</label><br>
                     <input type="text" name ="role" id="role" placeholder="Role">
+                </div>
+                <div class="form-group m-3">
+                    <label for="email">Email</label><br>
+                    <input type="text" name ="email" id="email" placeholder="Email">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-outline-success float-end">Sign Up</button>
@@ -45,6 +52,55 @@
         }
         if(flag==0){
             alertbox.innerHTML = "";
+        }
+    }
+
+    // checking the strength of password
+    var passwd = document.getElementById("password")
+    var strengthbar = document.getElementById("meter");
+    var display = document.getElementById("display")
+    function passwd_strength(password){
+        display.innerHTML="";
+        var strength=0;
+        if (password.match(/[a-z]+/)){
+            strength+=1;
+        }
+        if (password.match(/[A-Z]+/)){
+            strength+=1;
+        }
+        if (password.match(/[0-9]+/)){
+            strength+=1;
+        }
+        if (password.match(/[$@#&!]+/)){
+            strength+=1;
+        }
+        if (password.length<6){
+            display.innerHTML="minimum number of characters is 6";
+        }
+
+        if (password.length>12){
+            display.innerHTML="maximum number of characters is 12";
+        }
+        switch(strength){
+        case 0:
+            strengthbar.value=0;
+            break;
+
+        case 1:
+            strengthbar.value=25;
+            break;
+
+        case 2:
+            strengthbar.value=50;
+            break;
+
+        case 3:
+            strengthbar.value=75;
+            break;
+
+        case 4:
+            strengthbar.value=100;
+            break; 
         }
     }
 </script>

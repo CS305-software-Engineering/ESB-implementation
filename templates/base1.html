@@ -8,6 +8,15 @@
         <title>ESB Implementation</title>
     </head>
     <body>
+        <div class="sidenav">
+            <p class="center-align logo"><img src="../static/esb.png"></p>
+            <a href="{{url_for('instagram')}}">Instagram API</a>
+            <a href="{{url_for('translator')}}">Google Translate API</a>
+            <a href="{{url_for('weather')}}">Open Weather API</a>
+            <a href="{{url_for('string_reverse')}}">String Reverse API</a>
+            <a href="{{url_for('logout')}}">Logout</a>
+        </div>
+        
         <div class="container-fluid">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
