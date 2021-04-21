@@ -133,5 +133,4 @@ dmypy.json
 *.code-workspace
 
 #
-env
-__pycache__
+tests/__pycache__
