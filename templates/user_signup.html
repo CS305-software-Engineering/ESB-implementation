@@ -26,10 +26,11 @@
                 </div>
                 <div class="form-group m-3">
                     <label for="email">Email</label><br>
-                    <input type="text" name ="email" id="email" placeholder="Email">
+                    <input onkeyup="validate_email(this.value)" type="text" name ="email" id="email" placeholder="Email"><br>
+                    <small style="color:red" id="emailalertbox"></small>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-outline-success float-end">Sign Up</button>
+                    <button id="btn" disabled type="submit" class="btn btn-outline-success float-end">Sign Up</button>
                 </div>
                 <br>
                 <br>
@@ -39,8 +40,12 @@
     </div>
 </div>
 <script>
+    username_correct = false;
+    passwd_strong = false;
+    email_correct = false;
     var unames = {{ unames | tojson }};
-    alertbox = document.getElementById("alertbox");
+    var alertbox = document.getElementById("alertbox");
+    var btn = document.getElementById("btn")
     // a function that will alert user if he/she is typing a username already existing
     function check(val){
         var flag=0;
@@ -53,8 +58,19 @@
         if(flag==0){
             alertbox.innerHTML = "";
         }
-    }
 
+        if(alertbox.innerHTML == ""){
+            username_correct = true;
+        }
+        else{
+            username_correct = false;
+            btn.disabled = true;
+        }
+
+        if(username_correct && passwd_strong && email_correct ){
+            btn.disabled = false;
+        }
+    }
     // checking the strength of password
     var passwd = document.getElementById("password")
     var strengthbar = document.getElementById("meter");
@@ -102,6 +118,38 @@
             strengthbar.value=100;
             break; 
         }
+
+        if(display.innerHTML == "" && strengthbar.value >= 50){
+            passwd_strong = true;
+        }
+        else{
+            passwd_strong = false;
+            btn.disabled = true;
+        }
+
+        if(username_correct && passwd_strong && email_correct ){
+            btn.disabled = false;
+        }
     }
+
+    var ealertbox = document.getElementById("emailalertbox");
+    function validate_email(input) {
+        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (input.match(validRegex)) {
+            console.log("sjhsj")
+            email_correct = true;
+            ealertbox.innerHTML = "";
+        } 
+        else {
+            ealertbox.innerHTML = "Invalid Email";
+            email_correct = false;
+            btn.disabled = true;
+        }
+
+        if(username_correct && passwd_strong && email_correct ){
+            btn.disabled = false;
+        }
+    }
+
 </script>
 {% endblock content %}

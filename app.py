@@ -111,7 +111,23 @@ def confirm_user(username):
         # selecting that particular users username, password and role
         cursor.execute('select * from SignupConfirmation where username = %s',(str(username), ))
         user = cursor.fetchall()
+        password = user[0][1]
+        role = user[0][2]
+        email = user[0][3]
+        # finding priority of the user based on his/her role
+        priority = find_priority(role)
 
+        flag = True
+        try:
+            # sending mail for confirmation
+            msg = Message('User Confirmation', sender = 'cs305esb@gmail.com', recipients = [str(email)])
+            msg.body = "You are confirmed as a user on our ESB server. Now, you can login using the registered credentials."
+            x = mail.send(msg)
+            print("ddhg",x)
+        except SMTPException:
+            # mail sending failed - main does not exists that means - the user must be deleted 
+            flag = False
+            
         cursor = mysql.connection.cursor()
         # deleting the user from SignupConfirmation table 
         cursor.execute('DELETE from SignupConfirmation where username = %s',(str(username), ))
@@ -119,22 +135,13 @@ def confirm_user(username):
         # commit all results in database
         mysql.connection.commit()
 
-        password = user[0][1]
-        role = user[0][2]
-        email = user[0][3]
-        # finding priority of the user based on his/her role
-        priority = find_priority(role)
-
-        cursor = mysql.connection.cursor()
-        # inserting the confirmed user in Users table
-        cursor.execute('INSERT into Users(Username,UserPassword,UserRole,UserPriority,Email) values(%s,%s,%s,%s,%s)',(str(username), str(password), str(role), priority,str(email)))
-        # commit 
-        mysql.connection.commit()
+        if(flag):
+            cursor = mysql.connection.cursor()
+            # inserting the confirmed user in Users table
+            cursor.execute('INSERT into Users(Username,UserPassword,UserRole,UserPriority,Email) values(%s,%s,%s,%s,%s)',(str(username), str(password), str(role), priority,str(email)))
+            # commit 
+            mysql.connection.commit()
         
-        # sending mail for confirmation
-        msg = Message('User Confirmation', sender = 'cs305esb@gmail.com', recipients = [str(email)])
-        msg.body = "You are confirmed as a user on our ESB server. Now, you can login using the registered credentials."
-        mail.send(msg)
         # page is refreshed and the confirmed user's name will be removed from pending cofirmations list
         return redirect(url_for('admin_dashboard'))
     else:
@@ -157,9 +164,12 @@ def delete_user(username):
         cursor.execute('DELETE from SignupConfirmation where username = %s',(str(username), ))
         mysql.connection.commit()
         # sending mail for rejection
-        msg = Message('User Confirmation', sender = 'cs305esb@gmail.com', recipients = [str(email)])
-        msg.body = "You are confirmed as a user on our ESB server. Now, you can login using the registered credentials."
-        mail.send(msg)
+        try :
+            msg = Message('User Confirmation', sender = 'cs305esb@gmail.com', recipients = [str(email)])
+            msg.body = "You are confirmed as a user on our ESB server. Now, you can login using the registered credentials."
+            mail.send(msg)
+        except:
+            print("Email did not exist anyway.")
         # page is refreshed and the deleted user's name will be removed from pending cofirmations list
         return redirect(url_for('admin_dashboard'))
     else:
