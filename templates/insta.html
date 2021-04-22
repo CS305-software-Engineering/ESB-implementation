@@ -1,6 +1,6 @@
 {% extends filename %}
 {% block content %}
-<div class="container-fluid main">
+<div class="main">
     <form action="{{url_for('instagram')}}" method='POST'>
         <div class="form-group m-3">
             <label for="string">Enter the Username</label><br>
@@ -10,8 +10,28 @@
             <button type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div>
-        {{out}}
+    <div class="output">
+        {% if flag == 0 %}
+            {{out}}
+        {% endif %}
+        {% if flag == 1 %}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Biography</td>
+                    <td>{{out[0]}}</td>
+                </tr>
+                <tr>
+                    <td>Followers</td>
+                    <td>{{out[1]}}</td>
+                </tr>
+                <tr>
+                    <td>Following</td>
+                    <td>{{out[2]}}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}

@@ -16,12 +16,13 @@
                     <label for="password">Password</label><br>
                     <input type="password" name ="password" id="password" placeholder="Password">
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-outline-success float-end">Login</button>
+                <div class="form-group" style="margin-left: 1vw;">
+                    <button type="submit" class="btn btn-outline-success">Login</button>
                 </div>
                 <br>
                 <br>
                 <p class="center-align">New user?<a href="{{url_for('user_signup')}}">Sign up here</a></p>
+                <p class="center-align">For Admin Login<a href="{{url_for('welcome_admin')}}">Click here</a></p>
             </form>
         </div>
     </div>

@@ -5,6 +5,8 @@ from utils import *
 from flask_bcrypt import Bcrypt
 from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
+import ast
+import json
 # import mysql.connector
 # from mysql.connector.constants import ClientFlag
 
@@ -278,14 +280,16 @@ def string_reverse():
     if request.method == 'POST':
         string = request.form["string"]
         # this function is implemented in rapidapi.py file
-        out = str_rev_api(string) 
-        return render_template("string_reverse.html", out=out,filename=filename)
-    return render_template("string_reverse.html", out=out,filename=filename)
+        json_dict = ast.literal_eval(str_rev_api(string))
+        out = json_dict["reversed_string"]
+        return render_template("string_reverse.html", out=out,filename=filename,username=session["username"])
+    return render_template("string_reverse.html", out=out,filename=filename,username=session["username"])
 
 # instagram API
 
 @app.route("/instagram", methods=['GET', 'POST'])
 def instagram():
+    flag=0
     filename = ""
     if "username" in session and session["username"] == admin["username"]:
         filename = "base1.html"
@@ -295,11 +299,22 @@ def instagram():
         return redirect(url_for("welcome_admin")) 
     out = "Output will be shown here."
     if request.method == 'POST':
+        out = []
+        flag=1
         string = request.form["string"]
         # this function is implemented in rapidapi.py file
-        out = insta_api(string)
-        return render_template("insta.html", out=out,filename = filename)
-    return render_template("insta.html", out=out,filename=filename)
+        str_out = insta_api(string)
+        json_dict = json.loads(str_out)
+        if "status" in json_dict and json_dict["status"] == "fail":
+            flag=0
+            out = "Oops! Profile not found"
+            return render_template("insta.html", out=out,filename = filename,username=session["username"],flag=flag)
+        bio = json_dict["biography"]
+        followers = json_dict["edge_followed_by"]["count"]
+        following = json_dict["edge_follow"]["count"]
+        out = [bio, followers, following]
+        return render_template("insta.html", out=out,filename = filename,username=session["username"],flag=flag)
+    return render_template("insta.html", out=out,filename=filename,username=session["username"],flag=flag)
 
 # weather API
 
@@ -313,12 +328,30 @@ def weather():
     else:
         return redirect(url_for("welcome_admin")) 
     out = "Output will be shown here."
+    flag=0
     if request.method == 'POST':
+        flag=1
         string = request.form["string"]
         # this function is implemented in rapidapi.py file
-        out = weather_api(string)
-        return render_template("weather.html", out=out,filename=filename)
-    return render_template("weather.html", out=out,filename=filename)
+        str_out = weather_api(string)
+        if(str_out[0] == 't'):
+            str_out = str_out[4:]
+        else:
+            out = "Oops! City not found"
+            flag=0
+            return render_template("weather.html", out=out,filename=filename,username=session["username"],flag=flag)
+        json_dict = ast.literal_eval(str_out)
+        out = []
+        out.append(json_dict["weather"][0]["main"])
+        out.append(json_dict["weather"][0]["description"])
+        out.append(json_dict["main"]["temp"])
+        out.append(json_dict["main"]["feels_like"])
+        out.append(json_dict["main"]["temp_min"])
+        out.append(json_dict["main"]["temp_max"])
+        out.append(json_dict["main"]["pressure"])
+        out.append(json_dict["main"]["humidity"])
+        return render_template("weather.html", out=out,filename=filename,username=session["username"],flag=flag)
+    return render_template("weather.html", out=out,filename=filename,username=session["username"],flag=flag)
 
 # Google Translate API
 @app.route("/translator", methods=['GET', 'POST'])
@@ -331,12 +364,27 @@ def translator():
     else:
         return redirect(url_for("welcome_admin")) 
     out = "Output will be shown here."
+    flag=0
     if request.method == 'POST':
+        out=[]
+        flag=1
         string = request.form["string"]
         # this function is implemented in rapidapi.py file
-        out = translate_api(string)
-        return render_template("detect.html", out=out,filename=filename)
-    return render_template("detect.html", out=out,filename=filename)
+        str_out = translate_api(string)
+        json_dict = json.loads(str_out)
+        lang_code = json_dict["data"]["detections"][0][0]["language"]
+        confidence = json_dict["data"]["detections"][0][0]["confidence"]
+        lang_name = ""
+        f = open('static/languages_codes.json')
+        data = json.load(f)
+        for i in data["code2lang"]:
+            if(i["alpha2"] == lang_code):
+                lang_name = i["English"]
+                break
+        out.append(lang_name)
+        out.append(confidence)
+        return render_template("detect.html", out=out,filename=filename,username=session["username"],flag=flag)
+    return render_template("detect.html", out=out,filename=filename,username=session["username"],flag=flag)
 
 # starting the APP
 if __name__ == '__main__':

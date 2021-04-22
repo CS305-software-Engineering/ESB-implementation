@@ -1,6 +1,6 @@
 {% extends filename %}
 {% block content %}
-<div class="container-fluid main">
+<div class="main">
     <form action="{{url_for('string_reverse')}}" method='POST'>
         <div class="form-group m-3">
             <label for="string">Enter the string</label><br>
@@ -10,7 +10,7 @@
             <button type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div>
+    <div class="output">
         {{out}}
     </div>
 </div>

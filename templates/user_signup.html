@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex justify-content-center page-center">
+<div class="d-flex justify-content-center mt-5">
     <div class="card">
         <p class="center-align logo" style="background-color:#5fc2f9;"><img src="../static/esb.png"></p>
         <div class="card-header">
@@ -29,12 +29,13 @@
                     <input onkeyup="validate_email(this.value)" type="text" name ="email" id="email" placeholder="Email"><br>
                     <small style="color:red" id="emailalertbox"></small>
                 </div>
-                <div class="form-group">
-                    <button id="btn" disabled type="submit" class="btn btn-outline-success float-end">Sign Up</button>
+                <div class="form-group" style="margin-left: 1vw;">
+                    <button id="btn" disabled type="submit" class="btn btn-outline-success">Sign Up</button>
                 </div>
                 <br>
                 <br>
                 <p class="center-align">Already a user?<a href="{{url_for('user_login')}}">Login here</a></p>
+                <p class="center-align">For Admin Login<a href="{{url_for('welcome_admin')}}">Click here</a></p>
             </form>
         </div>
     </div>

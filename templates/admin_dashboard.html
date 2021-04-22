@@ -1,107 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <!-- CSS only -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
-        <link href="{{url_for('static',filename='styles/base2.css')}}" rel="stylesheet" type="text/css">
-        <link rel='shortcut icon' type='image/x-icon' href='{{url_for('static',filename='favicon.ico')}}' />
-        <title>ESB Implementation</title>
-    </head>
-    <body>
-        <div class="sidenav">
-            <p class="center-align logo"><img src="../static/esb.png"></p>
-            <a href="{{url_for('instagram')}}">Instagram API</a>
-            <a href="{{url_for('translator')}}">Google Translate API</a>
-            <a href="{{url_for('weather')}}">Open Weather API</a>
-            <a href="{{url_for('string_reverse')}}">String Reverse API</a>
-            <a href="{{url_for('logout')}}">Logout</a>
-        </div>
-
-        <div class="container-fluid main">
-            <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-1">
-                    <a id="logs-btn" class="active" onclick="return manageLogs()" href="#">Logs</a>
-                </div>
-                <div class="col-md-1">
-                    <a id="manage-btn" onclick="return manageUsers()" href="#">Manage Users</a>
-                </div>
-                <div class="col-md-4"></div>
+{% extends "base1.html" %}
+{% block content %}
+    <div class="main">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-1">
+                <a id="logs-btn" class="active" onclick="return manageLogs()" href="#">Logs</a>
             </div>
-            <div id="logs" >
-                    <p>Logs</p>
+            <div class="col-md-1">
+                <a id="manage-btn" onclick="return manageUsers()" href="#">Manage Users</a>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+        <div id="logs" >
+                <p>Logs</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">Request ID</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Type of request</th>
+                        <th scope="col">Receiver</th>
+                        <th scope="col">Initial Timestamp</th>
+                        <th scope="col">Final Timestamp</th>
+                        <th scope="col">Service Response status</th>
+                        <th scope="col">Return Response status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range(0,n) %}
+                        <tr>
+                            <td>{{logs[i][0]}}</td>
+                            <td>{{logs[i][1]}}</td>
+                            <td>{{logs[i][2]}}</td>
+                            <td>{{logs[i][3]}}</td>
+                            <td>{{logs[i][5]}}</td>
+                            <td>{{logs[i][6]}}</td>
+                            <td>{{logs[i][7]}}</td>
+                            <td>{{logs[i][8]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                <div id="manage-users" style="display: none;">
+                    <p>Pending Requests</p>
                     <table class="table">
                         <thead>
-                          <tr>
-                            <th scope="col">Request ID</th>
+                            <tr>
                             <th scope="col">Username</th>
-                            <th scope="col">Type of request</th>
-                            <th scope="col">Receiver</th>
-                            <th scope="col">Initial Timestamp</th>
-                            <th scope="col">Final Timestamp</th>
-                            <th scope="col">Service Response status</th>
-                            <th scope="col">Return Response status</th>
-                          </tr>
+                            <th scope="col">Role</th>
+                            <th scope="col">Email ID</th>
+                            <th scope="col">Confirm</th>
+                            <th scope="col">Delete</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            {% for i in range(0,n) %}
+                            {% for i in range(0,m) %}
                             <tr>
-                                <td>{{logs[i][0]}}</td>
-                                <td>{{logs[i][1]}}</td>
-                                <td>{{logs[i][2]}}</td>
-                                <td>{{logs[i][3]}}</td>
-                                <td>{{logs[i][5]}}</td>
-                                <td>{{logs[i][6]}}</td>
-                                <td>{{logs[i][7]}}</td>
-                                <td>{{logs[i][8]}}</td>
+                                <td>{{pending_users[i][0]}}</td>
+                                <td>{{pending_users[i][2]}}</td>
+                                <td>{{pending_users[i][3]}}</td>
+                                <td><a href="{{url_for('confirm_user',username=pending_users[i][0])}}">Confirm</a></td>
+                                <td><a href="{{url_for('delete_user',username=pending_users[i][0])}}">Delete </a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
-                      </table>
-                    </div>
-                    <div id="manage-users" style="display: none;">
-                        <p>Pending Requests</p>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                <th scope="col">Username</th>
-                                <th scope="col">Role</th>
-                                <th scope="col">Confirm</th>
-                                <th scope="col">Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for i in range(0,m) %}
-                                <tr>
-                                    <td>{{pending_users[i][0]}}</td>
-                                    <td>{{pending_users[i][2]}}</td>
-                                    <td><a href="{{url_for('confirm_user',username=pending_users[i][0])}}">Confirm</a></td>
-                                    <td><a href="{{url_for('delete_user',username=pending_users[i][0])}}">Delete </a></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            </table>
-                    </div>
-        </div>
-        <!-- JavaScript Bundle with Popper -->
-        <script>
-            function manageUsers(){
-                logs = document.getElementById("logs");
-                manage = document.getElementById("manage-users");
-                logs.style.display = 'none';
-                manage.style.display = 'block';
-                document.getElementById('manage-btn').classList.add("active");
-                document.getElementById('logs-btn').classList.remove("active");
-            }
-            function manageLogs(){
-                logs = document.getElementById("logs");
-                manage = document.getElementById("manage-users");
-                logs.style.display = 'block';
-                manage.style.display = 'none';
-                document.getElementById('logs-btn').classList.add("active");
-                document.getElementById('manage-btn').classList.remove("active");
-            }
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
-    </body>
-</html>
+                        </table>
+                </div>
+    </div>
+    <!-- JavaScript Bundle with Popper -->
+    <script>
+        function manageUsers(){
+            logs = document.getElementById("logs");
+            manage = document.getElementById("manage-users");
+            logs.style.display = 'none';
+            manage.style.display = 'block';
+            document.getElementById('manage-btn').classList.add("active");
+            document.getElementById('logs-btn').classList.remove("active");
+        }
+        function manageLogs(){
+            logs = document.getElementById("logs");
+            manage = document.getElementById("manage-users");
+            logs.style.display = 'block';
+            manage.style.display = 'none';
+            document.getElementById('logs-btn').classList.add("active");
+            document.getElementById('manage-btn').classList.remove("active");
+        }
+    </script>
+{% endblock content %}   

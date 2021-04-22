@@ -5,13 +5,23 @@ body{
     margin-top: 40vh;
 }
 .card{
+    width: 20vw;
     border-radius: 5px;
     box-shadow: 2px 2px 2px 2px;
-    padding:7px;
 }
 .card-header{
     background-color: lightcyan;
 }
 .center-align{
     text-align: center;
+}
+.output{
+    margin: 20px;
+    border-color: gray;
+    background-color: white;
+    border-radius: 5px;
+    width: 40vw;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0.5vw;
 }

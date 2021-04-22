@@ -1,6 +1,6 @@
 {% extends filename %}
 {% block content %}
-<div class="container-fluid main">
+<div class="main">
     <form action="{{url_for('translator')}}" method='POST'>
         <div class="form-group m-3">
             <label for="string">Enter the Sentence</label><br>
@@ -10,8 +10,13 @@
             <button type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div>
-        {{out}}
+    <div class="output">
+        {% if flag == 0 %}
+            {{out}}
+        {% endif %}
+        {% if flag == 1 %}
+        {{out[0]}} Language Detected with {{out[1]}} confidence.
+        {% endif %}
     </div>
 </div>
 {% endblock content %}       

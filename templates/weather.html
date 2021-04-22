@@ -1,6 +1,6 @@
 {% extends filename %}
 {% block content %}
-<div class="container-fluid main">
+<div class="main">
     <form action="{{url_for('weather')}}" method='POST'>
         <div class="form-group m-3">
             <label for="string">Enter the City</label><br>
@@ -10,8 +10,41 @@
             <button type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div>
-        {{out}}
+    <div class="output">
+        {% if flag == 0 %}
+            {{out}}
+        {% endif %}
+        {% if flag == 1 %}
+        {{out[0]}}, {{out[1]}}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Temperature</td>
+                    <td>{{out[2]}}</td>
+                </tr>
+                <tr>
+                    <td>Feels like</td>
+                    <td>{{out[3]}}</td>
+                </tr>
+                <tr>
+                    <td>Minimum Temperature</td>
+                    <td>{{out[4]}}</td>
+                </tr>
+                <tr>
+                    <td>Maximum Temperature</td>
+                    <td>{{out[5]}}</td>
+                </tr>
+                <tr>
+                    <td>Pressure</td>
+                    <td>{{out[6]}}</td>
+                </tr>
+                <tr>
+                    <td>Humidity</td>
+                    <td>{{out[7]}}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}     
