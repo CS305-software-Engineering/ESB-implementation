@@ -1,5 +1,6 @@
 -- first switch to the database - esb, then run the following commands
-
+create database ESB;
+use ESB;
 
 -- user table
 create table IF NOT EXISTS Users(
@@ -8,7 +9,7 @@ create table IF NOT EXISTS Users(
 	UserRole varchar(100) not null,
 	UserPriority int not null,
 	Email varchar(500) not null
-)
+);
 
  -- users waiting for confirmation after signup from the admin
 create table IF NOT EXISTS SignupConfirmation(
@@ -16,7 +17,7 @@ create table IF NOT EXISTS SignupConfirmation(
 	UserPassword varchar(100) not null,
 	UserRole varchar(100) not null,
 	Email varchar(500) not null
-)
+);
 
  -- logs for each request
 create table IF NOT EXISTS AckLogs(
@@ -37,4 +38,4 @@ create table IF NOT EXISTS AckLogs(
 	ServiceResponseStatus int not null,
 	-- API call status, etc.
 	ReturnResponseStatus int not null -- Successfully sent back to the user client or not
-) 
+);

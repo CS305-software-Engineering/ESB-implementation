@@ -9,5 +9,11 @@ The project consists of the implementation of an Enterprise Service Bus that fac
 5. [Testing Plan Document](https://github.com/CS305-software-Engineering/ESB-implementation/wiki/Test-Plan-Document)
 
 ### Instrutions to run the project
-1. run pip3 install -r requirements.txt
-2. run python3 app.py
+1. Setting up the database :
+    1. Install MySQL on your system.
+    2. Setup the root user with a password.
+    3. In the MySQL command line, copy the code from init.sql file and paste it there.
+    4. Run "show tables;" command to check if all three tables are there.
+    5. Use your mysql password in line 44 of app.py 
+2. run pip3 install -r requirements.txt
+3. run python3 app.py
