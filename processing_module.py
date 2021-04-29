@@ -4,8 +4,8 @@ import json
 import sys
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
 input_ports = {
-    "instagram": 8002,
-    "weather": 8001,
+    "instagram": 8001,
+    "weather": 8002,
     "translate": 8003,
     "reverse": 8004,
     "c2c": 8005
