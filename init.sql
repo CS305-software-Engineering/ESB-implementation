@@ -8,7 +8,8 @@ create table IF NOT EXISTS Users(
 	UserPassword varchar(100) not null,
 	UserRole varchar(100) not null,
 	UserPriority int not null,
-	Email varchar(500) not null
+	Email varchar(500) not null,
+	Flag boolean not null
 );
 
  -- users waiting for confirmation after signup from the admin
