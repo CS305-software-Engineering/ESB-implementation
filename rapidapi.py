@@ -1,7 +1,7 @@
 # helping libraries
 import http.client
 
-# method that interacts with string reverse API 
+# method that interacts with string reverse API
 # input : a string that needs to be reversed
 def str_rev_api(string):
     # setup connection
@@ -16,12 +16,12 @@ def str_rev_api(string):
     # return the response
     return data.decode("utf-8")
 
-#current weather data 
+#current weather data
 # input : city name
 def weather_api(city):
     # setup connection
     conn = http.client.HTTPSConnection("community-open-weather-map.p.rapidapi.com")
-    # RAPIDAPI CREDENTIALS 
+    # RAPIDAPI CREDENTIALS
     headers = {
         'x-rapidapi-key': "48a9d3acbemsh51e3d6835ad11bep1a253cjsne66f78646111",
         'x-rapidapi-host': "community-open-weather-map.p.rapidapi.com"
@@ -43,7 +43,7 @@ def weather_api(city):
 def insta_api(username):
     # setup connection
     conn = http.client.HTTPSConnection("instagram40.p.rapidapi.com")
-    # RAPIDAPI CREDENTIALS 
+    # RAPIDAPI CREDENTIALS
     headers = {
         'x-rapidapi-key': "48a9d3acbemsh51e3d6835ad11bep1a253cjsne66f78646111",
         'x-rapidapi-host': "instagram40.p.rapidapi.com"
@@ -65,7 +65,7 @@ def insta_api(username):
 def translate_api(payload):
     # setup connection
     conn = http.client.HTTPSConnection("google-translate1.p.rapidapi.com")
-    # RAPIDAPI CREDENTIALS 
+    # RAPIDAPI CREDENTIALS
     headers = {
         'content-type': "application/x-www-form-urlencoded",
         'accept-encoding': "application/gzip",
@@ -83,3 +83,10 @@ def translate_api(payload):
     status=res.status
     # return the response
     return data.decode("utf-8")
+
+
+input = "nishith.jupally"
+
+
+out=insta_api(input)
+

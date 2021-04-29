@@ -26,7 +26,7 @@ RequestID_to_json_data = {}  # map
 
 # top => max(10 * request_priority - requestID, -RequestID)
 # since requestIDs are generated serially, hence this will prevent starvation
-priority_queue = max_heap
+priority_queue = max_heap()
 
 running = True
 while running:
@@ -35,6 +35,7 @@ while running:
         # only do if something is present to receive
         if conn_a2pq.poll():  # to make it unblockale
             msg = conn_a2pq.recv()
+            print(msg)
             if msg == "terminate":  # continue while the pq is not empty
                 conn_a2pq_active = False
                 conn_a2pq.close()
@@ -47,7 +48,7 @@ while running:
             # insert into priority_queue
             RequestPriority = data["RequestPriority"]
             RequestID = data["RequestID"]
-
+            print(RequestID,RequestPriority)
             # to prevent starvation use RequestID also
             priority_queue.push([10 * RequestPriority - RequestID, -RequestID])
 
@@ -73,7 +74,8 @@ while running:
             break
 
     if conn_pq2p.poll():
-        msg = conn_pq2p.recv()  # make it non blocking
+        msg = conn_pq2p.recv() 
+         # make it non blocking
         if (msg == "free"):
             processor_busy = False
 

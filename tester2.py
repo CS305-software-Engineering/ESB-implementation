@@ -4,7 +4,7 @@ from socket import *
 
 sock = socket()
 sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-listener = Listener(('localhost', 6011), authkey=b'secret password')
+listener = Listener(('localhost', 8602), authkey=b'secret password')
 running = True
 while running:
     conn = listener.accept()

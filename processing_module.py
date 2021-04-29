@@ -4,8 +4,8 @@ import json
 import sys
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
 input_ports = {
-    "instagram": 8001,
-    "weather": 8002,
+    "instagram": 8002,
+    "weather": 8001,
     "translate": 8003,
     "reverse": 8004,
     "c2c": 8005
@@ -20,6 +20,7 @@ conn_2ia = listener.accept()
 while running:
     print('connection accepted from', listener.last_accepted)
     msg = conn_2ia.recv()
+    print(msg)
     if msg == 'terminate':
         conn_2dp.send('terminate')
         conn_2ia.close()
@@ -29,7 +30,8 @@ while running:
         # create client to seng to dispacter
         # close the client connection
         # close this connection
-        message = json.loads(msg)
+        #message = json.loads(msg)
+        message=msg
         if processor_port == input_ports["instagram"]:  # call instagram api
             username = message['Payload']
             Api_response = insta_api(username)
@@ -58,6 +60,7 @@ while running:
         else:
             print("check input port")
         msg = json.dumps(message)  # sending message to dispatcher
+        conn_2ia.send("free")
         conn_2dp.send(msg)
 
 conn_2dp.close()
