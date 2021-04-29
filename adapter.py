@@ -13,11 +13,11 @@ import json
 listener_port = 6000
 # dictionary containing port numbers for different pq
 port_numbers = {
-    "instagram": 6001,
-    "weather": 6002,
-    "translate": 6003,
-    "string_reverse": 6004,
-    "C2C": 6005
+    "instagram": 6001
+   # "weather": 6002,
+   # "translate": 6003,
+   # "string_reverse": 6004,
+   # "C2C": 6005
 }
 
 listener = Listener(('localhost', listener_port), authkey=b'secret password')
@@ -35,6 +35,7 @@ running = True
 while running:
     # data accepted from http server
     msg = conn_s2a.recv()
+    print(msg)
     if msg == "terminate":
         conn_s2a.close()
         running = False
@@ -50,7 +51,7 @@ while running:
 
     TypeofRequest = data["TypeofRequest"]  # redundent
     Receiver = data["Receiver"]
-
+    print(Receiver)
     # forward data to corresponding priority queue
     conn_a2pq[Receiver].send(data)
 

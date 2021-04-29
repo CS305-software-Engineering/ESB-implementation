@@ -386,6 +386,27 @@ def translator():
         return render_template("detect.html", out=out,filename=filename,username=session["username"],flag=flag)
     return render_template("detect.html", out=out,filename=filename,username=session["username"],flag=flag)
 
+@app.route('/client2client',methods=['GET','POST'])
+def client2client():
+    filename = ""
+    if "username" in session and session["username"] == admin["username"]:
+        filename = "base1.html"
+    elif "username" in session and session["username"] != admin["username"]:
+        filename = "base2.html"
+    else:
+        return redirect(url_for("welcome_admin"))
+    out = "Output will be shown here."
+    flag=0
+    online_users = get_online_users()
+    # if request.method == 'POST':
+        
+    return render_template("client2client.html", online_users=online_users, out=out,filename=filename,username=session["username"],flag=flag)
+
+def get_online_users():
+    '''
+    TODO : flag method and retreive the list of all online users and return it
+    '''
+    return ['garima45','abhay78','bollusathwik32','babayaga56','srikar11']
 # starting the APP
 if __name__ == '__main__':
     app.run(debug=True)
