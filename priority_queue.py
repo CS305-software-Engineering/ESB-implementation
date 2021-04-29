@@ -26,7 +26,7 @@ RequestID_to_json_data = {}  # map
 
 # top => max(10 * request_priority - requestID, -RequestID)
 # since requestIDs are generated serially, hence this will prevent starvation
-priority_queue = max_heap
+priority_queue = max_heap()
 
 running = True
 while running:
