@@ -15,7 +15,7 @@ class max_heap:
         heappush_max(self._heap, x)
 
     def pop(self):
-        if (self.size(self._heap) == 0):
+        if (self.size() == 0):
             raise SizeError
         return heappop_max(self._heap)
 
