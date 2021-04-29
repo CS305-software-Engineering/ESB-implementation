@@ -59,5 +59,5 @@ while running:
 # Username
 # TypeofRequest - API for API call, C2C for Client to Client communication
 # Receiver - API/Client to be contacted
-# Payload - contains the payload / message // json object
+# Payload - contains the payload / message // string object
 # RequestPriority (user priority for API call and sum of clients' priority in case of C2C)
