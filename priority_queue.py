@@ -2,7 +2,6 @@
 # this particular program will have 5 instances
 
 from multiprocessing.connection import Client, Listener
-import json
 import sys
 from max_heap import *
 import time
@@ -11,9 +10,8 @@ time.sleep(6)
 listener_port = int(sys.argv[1])
 processor_port = int(sys.argv[2])
 
-listener_a2pq = Listener(('localhost', listener_port),
-                         authkey=b'secret password')
-print('in pqm connection accepted from', listener_a2pq.last_accepted)
+listener_a2pq = Listener(('localhost', listener_port), authkey=b'secret password')
+print('priority_queue connection accepted from', listener_a2pq.last_accepted, listener_port)
 
 # accept connection from adapter
 conn_a2pq = listener_a2pq.accept()
@@ -37,8 +35,8 @@ while running:
         # only do if something is present to receive
         if conn_a2pq.poll():  # to make it unblockale
             msg = conn_a2pq.recv()
-            print("pq",msg)
             if msg == "terminate":  # continue while the pq is not empty
+                print(f"terminate priority queue {listener_port}")
                 conn_a2pq_active = False
                 conn_a2pq.close()
                 continue
@@ -50,7 +48,7 @@ while running:
             # insert into priority_queue
             RequestPriority = data["RequestPriority"]
             RequestID = data["RequestID"]
-            print(RequestID,RequestPriority)
+
             # to prevent starvation use RequestID also
             priority_queue.push([10 * RequestPriority - RequestID, -RequestID])
 

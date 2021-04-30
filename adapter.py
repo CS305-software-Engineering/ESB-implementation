@@ -10,6 +10,7 @@
 from multiprocessing.connection import Listener, Client
 import json
 import time
+
 time.sleep(8)
 
 listener_port = 6000
@@ -19,7 +20,7 @@ port_numbers = {
     "weather": 6002,
     "translate": 6003,
     "string_reverse": 6004
-   # "C2C": 6005
+    # "C2C": 6005
 }
 
 listener = Listener(('localhost', listener_port), authkey=b'secret password')
@@ -37,13 +38,14 @@ running = True
 while running:
     # data accepted from http server
     msg = conn_s2a.recv()
-    print("adapter",msg)
     if msg == "terminate":
         conn_s2a.close()
         running = False
 
         for conn in conn_a2pq.values():
             conn.send("terminate")
+            print(f"terminate adapter {listener_port}")
+            # time.sleep(10)
             conn.close()  # close the subsequent connections to pqs
 
         break
@@ -53,7 +55,6 @@ while running:
 
     TypeofRequest = data["TypeofRequest"]  # redundent
     Receiver = data["Receiver"]
-    print(Receiver)
     # forward data to corresponding priority queue
     conn_a2pq[Receiver].send(data)
 
