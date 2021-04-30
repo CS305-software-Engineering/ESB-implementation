@@ -7,6 +7,8 @@ from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
 import ast
 import json
+import time
+from client2client import C2CHandler
 # import mysql.connector
 # from mysql.connector.constants import ClientFlag
 
@@ -24,6 +26,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
+reqID = 0
 # DATABASE CONNECTION 
 ##GCP
 # config = {
@@ -396,17 +399,29 @@ def client2client():
     else:
         return redirect(url_for("welcome_admin"))
     out = "Output will be shown here."
-    flag=0
-    online_users = get_online_users()
-    # if request.method == 'POST':
-        
-    return render_template("client2client.html", online_users=online_users, out=out,filename=filename,username=session["username"],flag=flag)
+    global reqID
+    reqID += 1
+    online_users = get_users()
+    if request.method == 'POST':
+        username = request.form["string"]
+        if username not in online_users:
+            out = "There's no user with username "+username
+        else:
+            message = request.form["message"]
+            curr_timestamp = time.time()
+            out = C2CHandler(session["username"],username,message,curr_timestamp,reqID)
+            return render_template("client2client.html", online_users=online_users, out=out,filename=filename,username=session["username"])
+    return render_template("client2client.html", online_users=online_users, out=out,filename=filename,username=session["username"])
 
-def get_online_users():
-    '''
-    TODO : flag method and retreive the list of all online users and return it
-    '''
-    return ['garima45','abhay78','bollusathwik32','babayaga56','srikar11']
+def get_users():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT username from Users')
+    mysql.connection.commit()
+    users = cursor.fetchall()
+    final_users = []
+    for user in users:
+        final_users.append(user[0])
+    return final_users
 # starting the APP
 if __name__ == '__main__':
     app.run(debug=True)
