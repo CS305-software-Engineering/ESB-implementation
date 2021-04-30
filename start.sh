@@ -1,3 +1,15 @@
 #! /usr/bin/bash
-(python tester2.py) & (python tester.py)
-wait
+#(python3 tester2.py) & (python3 dispatcher.py 8500 8600) & (python3 processing_module.py 8001 8500) & 
+#(python3 priority_queue.py 6001 8001) & (python3 adapter.py ) & (python3 tester.py)
+#wait
+
+arr=(1 2 3 4)
+echo "printing"
+printf "%s \n" "${arr[2]}"
+pq=(6001 6002 6003 6004)
+pm=(8001 8002 8003 8004)
+disp=(8501 8502 8503 8504)
+(python3 tester2.py) & (python3 dispatcher.py ${disp[0]} 8600) & (python3 dispatcher.py ${disp[1]} 8600) & (python3 dispatcher.py ${disp[2]} 8600) & (python3 dispatcher.py ${disp[3]} 8600) &
+(python3 processing_module.py ${pm[0]} ${disp[0]}) & (python3 processing_module.py ${pm[1]} ${disp[1]}) & (python3 processing_module.py ${pm[2]} ${disp[2]}) & (python3 processing_module.py ${pm[3]} ${disp[3]}) &
+(python3 priority_queue.py ${pq[0]} ${pm[0]}) & (python3 priority_queue.py ${pq[1]} ${pm[1]}) & (python3 priority_queue.py ${pq[2]} ${pm[2]}) & (python3 priority_queue.py ${pq[3]} ${pm[3]}) &
+(python3 adapter.py ) & (python3 tester.py)
