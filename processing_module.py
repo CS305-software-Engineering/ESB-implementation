@@ -2,13 +2,15 @@ from multiprocessing.connection import Listener, Client
 from socket import *
 import json
 import sys
+import time
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
+time.sleep(4)
 input_ports = {
     "instagram": 8001,
     "weather": 8002,
     "translate": 8003,
-    "reverse": 8004,
-    "c2c": 8005
+    "reverse": 8004
+   # "c2c": 8005
 }
 
 processor_port = int(sys.argv[1])
@@ -18,9 +20,9 @@ conn_2dp = Client(('0.0.0.0', dispatcher_port), authkey=b'secret password')
 running = True
 conn_2ia = listener.accept()
 while running:
-    print('connection accepted from', listener.last_accepted)
+    print('in proc_mod connection accepted from', listener.last_accepted)
     msg = conn_2ia.recv()
-    print(msg)
+    print("pm",msg)
     if msg == 'terminate':
         conn_2dp.send('terminate')
         conn_2ia.close()

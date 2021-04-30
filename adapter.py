@@ -9,14 +9,16 @@
 
 from multiprocessing.connection import Listener, Client
 import json
+import time
+time.sleep(8)
 
 listener_port = 6000
 # dictionary containing port numbers for different pq
 port_numbers = {
-    "instagram": 6001
-   # "weather": 6002,
-   # "translate": 6003,
-   # "string_reverse": 6004,
+    "instagram": 6001,
+    "weather": 6002,
+    "translate": 6003,
+    "string_reverse": 6004
    # "C2C": 6005
 }
 
@@ -35,7 +37,7 @@ running = True
 while running:
     # data accepted from http server
     msg = conn_s2a.recv()
-    print(msg)
+    print("adapter",msg)
     if msg == "terminate":
         conn_s2a.close()
         running = False

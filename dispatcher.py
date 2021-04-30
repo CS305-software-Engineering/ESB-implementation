@@ -3,7 +3,7 @@ import json
 import time
 from socket import *
 import sys
-
+time.sleep(2)
 sock = socket()
 sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 # port on which processing module is sending data
@@ -17,7 +17,7 @@ running = True
 con = listener.accept()
 while running:
     msg = con.recv()
-    print(msg)
+    print("disp",msg)
     if msg == 'terminate':
         con.close()
         sender.send(msg)

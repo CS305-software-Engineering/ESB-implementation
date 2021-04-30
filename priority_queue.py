@@ -5,13 +5,15 @@ from multiprocessing.connection import Client, Listener
 import json
 import sys
 from max_heap import *
+import time
 
+time.sleep(6)
 listener_port = int(sys.argv[1])
 processor_port = int(sys.argv[2])
 
 listener_a2pq = Listener(('localhost', listener_port),
                          authkey=b'secret password')
-print('connection accepted from', listener_a2pq.last_accepted)
+print('in pqm connection accepted from', listener_a2pq.last_accepted)
 
 # accept connection from adapter
 conn_a2pq = listener_a2pq.accept()
@@ -35,7 +37,7 @@ while running:
         # only do if something is present to receive
         if conn_a2pq.poll():  # to make it unblockale
             msg = conn_a2pq.recv()
-            print(msg)
+            print("pq",msg)
             if msg == "terminate":  # continue while the pq is not empty
                 conn_a2pq_active = False
                 conn_a2pq.close()
@@ -74,8 +76,8 @@ while running:
             break
 
     if conn_pq2p.poll():
-        msg = conn_pq2p.recv() 
-         # make it non blocking
+        msg = conn_pq2p.recv()
+        # make it non blocking
         if (msg == "free"):
             processor_busy = False
 
