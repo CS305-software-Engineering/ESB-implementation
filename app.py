@@ -8,7 +8,7 @@ from flask_mail import Mail, Message
 import ast
 import json
 import time
-from client2client import C2CHandler
+from request_handlers import *
 import os
 from dotenv import load_dotenv
 
@@ -320,10 +320,12 @@ def string_reverse():
         return redirect(url_for("welcome_admin"))
     out = "Output will be shown here."
     if request.method == 'POST':
+        out="sfdf"
+        global reqID
+        reqID += 1
         string = request.form["string"]
-        # this function is implemented in rapidapi.py file
-        json_dict = ast.literal_eval(str_rev_api(string))
-        out = json_dict["reversed_string"]
+        RequestSender(session["username"],"reverse",string,time.time(),reqID)
+        # out = json_dict["reversed_string"]
         return render_template("string_reverse.html",
                                out=out,
                                filename=filename,

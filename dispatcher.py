@@ -1,7 +1,7 @@
 from multiprocessing.connection import Listener, Client
 import time
 import sys
-
+import json
 import os
 from dotenv import load_dotenv
 import mysql.connector
@@ -23,6 +23,7 @@ def connect():
                                        password=str(MYSQL_PASSWORD))
         if conn.is_connected():
             print('Connected to MySQL database')
+            return conn
 
     except Error as e:
         print(e)
@@ -32,7 +33,7 @@ def connect():
             conn.close()
 
 
-connect()
+conn = connect()
 
 time.sleep(2)
 # port on which processing module is sending data
@@ -55,3 +56,17 @@ while running:
         break
     # sender.send(msg)
     print('write msg to database if msg is not terminate')
+    data = json.loads(msg)
+    reqID = data["RequestID"]
+    username = data["Username"]
+    receiver = data["Receiver"]
+    initial_timestamp = data["InitialTimestamp"]
+    final_timestamp = time.time()
+    message = data["Payload"]
+    response = data["Api_response"]
+    typeofreq = data["TypeofRequest"]
+    
+    cur = conn.cursor()
+    cur.execute('INSERT into Pending(RequestID,Username,Receiver,RequestPayload,InitialTimestamp) values(%s,%s,%s,%s,%s)',(str(reqID),str(username),str(receiver),str(message),initial_timestamp))
+    
+    cur.execute('INSERT into AckLogs(RequestID,Username,TypeofRequest,Receiver,RequestPayload,InitialTimestamp,FinalTimestamp,ServiceResponseStatus,ReturnResponseStatus) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)',(str(reqID),str(username),str(typeofreq),str(receiver),str(message),initial_timestamp,final_timestamp,200,200))

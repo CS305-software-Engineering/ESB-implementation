@@ -19,7 +19,7 @@ port_numbers = {
     "instagram": 6001,
     "weather": 6002,
     "translate": 6003,
-    "string_reverse": 6004
+    "reverse": 6004
     # "C2C": 6005
 }
 
