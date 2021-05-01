@@ -23,16 +23,16 @@ port_numbers = {
     # "C2C": 6005
 }
 
-listener = Listener(('localhost', listener_port), authkey=b'secret password')
-
-# accept a connection from HTTP server
-conn_s2a = listener.accept()
-print('connection accepted from', listener.last_accepted)
-
 # dictionary containing connections to priority queues
 conn_a2pq = {}
 for key, value in port_numbers.items():
     conn_a2pq[key] = Client(('localhost', value), authkey=b'secret password')
+
+# accept a connection from HTTP server
+listener = Listener(('localhost', listener_port), authkey=b'secret password')
+
+conn_s2a = listener.accept()
+print('connection accepted from', listener.last_accepted)
 
 running = True
 while running:
@@ -56,7 +56,11 @@ while running:
     TypeofRequest = data["TypeofRequest"]  # redundent
     Receiver = data["Receiver"]
     # forward data to corresponding priority queue
-    conn_a2pq[Receiver].send(data)
+    if data["TypeofRequest"] == "API":
+        conn_a2pq[Receiver].send(data)
+    else:
+        conn_a2pq["C2C"].send(data)
+    # conn_a2pq[Receiver].send(data)
 
 # data received from HTTP server
 # RequestID

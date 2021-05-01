@@ -8,6 +8,7 @@ from flask_mail import Mail, Message
 import ast
 import json
 import time
+from time import sleep
 from request_handlers import *
 import os
 from dotenv import load_dotenv
@@ -39,6 +40,10 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 reqID = 0
+
+sleep(12)
+start_adapter_connection()
+
 # DATABASE CONNECTION
 ##GCP
 # config = {
@@ -73,6 +78,7 @@ bcrypt = Bcrypt(app)
 # very first page of the ESB - login for admins
 @app.route("/", methods=['GET', 'POST'])
 def welcome_admin():
+    print("hello")
     # if the cookies for username are already set then the user will be redirected to his/her dashboard
     # if s/he is admin
     if "username" in session and session["username"] == admin["username"]:
@@ -320,11 +326,12 @@ def string_reverse():
         return redirect(url_for("welcome_admin"))
     out = "Output will be shown here."
     if request.method == 'POST':
-        out="sfdf"
+        out = "sfdf"
         global reqID
         reqID += 1
         string = request.form["string"]
-        RequestSender(session["username"],"reverse",string,time.time(),reqID)
+        RequestSender(session["username"], "reverse", string, time.time(),
+                      reqID)
         # out = json_dict["reversed_string"]
         return render_template("string_reverse.html",
                                out=out,
@@ -508,6 +515,12 @@ def client2client():
                            username=session["username"])
 
 
+# for a particular requesID the client will ping this route to check for any available updates
+@app.route('/check_update', methods=['GET'])
+def check_update():
+    pass
+
+
 def get_users():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT username from Users')
@@ -521,4 +534,5 @@ def get_users():
 
 # starting the APP
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8080, debug=True)
+    # app.run(debug=True)

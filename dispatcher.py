@@ -37,13 +37,17 @@ def connect():
 conn = connect()
 
 time.sleep(2)
+
 # port on which processing module is sending data
 listener_port = int(sys.argv[1])
 # port on which HTTP server is listening
-http_port = int(sys.argv[2])
+http_port = int(sys.argv[2])  #! deprecated
 
-listener = Listener(('0.0.0.0', listener_port), authkey=b'secret password')
-# sender = Client(('0.0.0.0', http_port), authkey=b'secret password')
+listener = Listener(('localhost', listener_port), authkey=b'secret password')
+# sender = Client(('localhost', http_port), authkey=b'secret password')
+
+print('in dispathcer connection accepted from', listener.last_accepted,
+      http_port)
 running = True
 con = listener.accept()
 while running:

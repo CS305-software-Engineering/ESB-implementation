@@ -21,7 +21,8 @@ conn_2dp = Client(('localhost', dispatcher_port), authkey=b'secret password')
 running = True
 conn_2ia = listener.accept()
 
-print('in proc_mod connection accepted from', listener.last_accepted, processor_port)
+print('in proc_mod connection accepted from', listener.last_accepted,
+      processor_port)
 
 while running:
     msg = conn_2ia.recv()
@@ -60,7 +61,7 @@ while running:
             Api_response = translate_api(string)
             message['Api_response'] = Api_response
 
-        elif processor_port == input_ports["c2c"]:  # client to client API
+        elif processor_port == input_ports["C2C"]:  # client to client API
             client_message = message['Payload']  # check if client is active
             message['Api_response'] = client_message
         else:

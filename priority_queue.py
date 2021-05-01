@@ -10,15 +10,17 @@ time.sleep(6)
 listener_port = int(sys.argv[1])
 processor_port = int(sys.argv[2])
 
-listener_a2pq = Listener(('localhost', listener_port), authkey=b'secret password')
-print('priority_queue connection accepted from', listener_a2pq.last_accepted, listener_port)
-
-# accept connection from adapter
-conn_a2pq = listener_a2pq.accept()
-conn_a2pq_active = True
+listener_a2pq = Listener(('localhost', listener_port),
+                         authkey=b'secret password')
 
 # make connection to processing module (maybe not needed)
 conn_pq2p = Client(('localhost', processor_port), authkey=b'secret password')
+
+# accept connection from adapter
+conn_a2pq = listener_a2pq.accept()
+print('priority_queue connection accepted from', listener_a2pq.last_accepted,
+      listener_port)
+conn_a2pq_active = True
 
 processor_busy = False
 
