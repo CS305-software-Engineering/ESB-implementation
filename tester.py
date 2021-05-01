@@ -1,6 +1,7 @@
 from multiprocessing.connection import Client
 import time
 import json
+from curr_time import get_curr_time
 
 time.sleep(10)
 # Client 1
@@ -10,7 +11,8 @@ j = {
     "TypeofRequest": "API",
     "Receiver": "weather",
     "Payload": "Mumbai",
-    "RequestPriority": 100
+    "RequestPriority": 100,
+    "InitialTimestamp": get_curr_time()
 }
 j1 = {
     "RequestID": 1,
@@ -18,7 +20,8 @@ j1 = {
     "TypeofRequest": "API",
     "Receiver": "translate",
     "Payload": "Kaise ho",
-    "RequestPriority": 10000
+    "RequestPriority": 10000,
+    "InitialTimestamp": get_curr_time()
 }
 
 data = json.dumps(j)

@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 from mysql.connector import Error
+from curr_time import get_curr_time
 
 load_dotenv()
 
@@ -28,9 +29,9 @@ def connect():
     except Error as e:
         print(e)
 
-    finally:
-        if conn is not None and conn.is_connected():
-            conn.close()
+    # finally:
+    #     if conn is not None and conn.is_connected():
+    #         conn.close()
 
 
 conn = connect()
@@ -49,24 +50,39 @@ while running:
     msg = con.recv()
     if msg == 'terminate':
         con.close()
+        conn.close()
         print(f"terminate dispatcher {listener_port}")
         # sender.send(msg)
         # sender.close()
         running = False
         break
-    # sender.send(msg)
-    print('write msg to database if msg is not terminate')
+
     data = json.loads(msg)
     reqID = data["RequestID"]
     username = data["Username"]
     receiver = data["Receiver"]
     initial_timestamp = data["InitialTimestamp"]
-    final_timestamp = time.time()
+    final_timestamp = get_curr_time()
+
     message = data["Payload"]
     response = data["Api_response"]
     typeofreq = data["TypeofRequest"]
-    
-    cur = conn.cursor()
-    cur.execute('INSERT into Pending(RequestID,Username,Receiver,RequestPayload,InitialTimestamp) values(%s,%s,%s,%s,%s)',(str(reqID),str(username),str(receiver),str(message),initial_timestamp))
-    
-    cur.execute('INSERT into AckLogs(RequestID,Username,TypeofRequest,Receiver,RequestPayload,InitialTimestamp,FinalTimestamp,ServiceResponseStatus,ReturnResponseStatus) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)',(str(reqID),str(username),str(typeofreq),str(receiver),str(message),initial_timestamp,final_timestamp,200,200))
+
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            'INSERT into Pending(RequestID,Username,Receiver,RequestPayload,InitialTimestamp) values(%s,%s,%s,%s,%s)',
+            (str(reqID), str(username), str(receiver), str(message),
+             initial_timestamp))
+        conn.commit()
+        print("wrote to Pending")
+
+        cur.execute(
+            'INSERT into AckLogs(RequestID,Username,TypeofRequest,Receiver,RequestPayload,InitialTimestamp,FinalTimestamp,ServiceResponseStatus,ReturnResponseStatus) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)',
+            (str(reqID), str(username), str(typeofreq), str(receiver),
+             str(message), initial_timestamp, final_timestamp, 200, 200))
+        conn.commit()
+        print("wrote to AckLogs")
+    except Exception as exp:
+        print("unable to write to db")
+        print(exp)
