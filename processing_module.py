@@ -58,7 +58,7 @@ while running:
         # call string_reverse api
         elif processor_port == input_ports["reverse"]:
             string = message['Payload']
-            Api_response = translate_api(string)
+            Api_response = str_rev_api(string)
             message['Api_response'] = Api_response
 
         elif processor_port == input_ports["C2C"]:  # client to client API

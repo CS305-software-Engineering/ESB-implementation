@@ -31,32 +31,33 @@ for key, value in port_numbers.items():
 # accept a connection from HTTP server
 listener = Listener(('localhost', listener_port), authkey=b'secret password')
 
-conn_s2a = listener.accept()
-print('connection accepted from', listener.last_accepted)
-
 running = True
 while running:
     # data accepted from http server
+    conn_s2a = listener.accept()
+    print('connection accepted from', listener.last_accepted)
     msg = conn_s2a.recv()
+    print(msg)
     if msg == "terminate":
         conn_s2a.close()
-        running = False
+        continue
+            # running = False
 
-        for conn in conn_a2pq.values():
-            conn.send("terminate")
-            print(f"terminate adapter {listener_port}")
-            # time.sleep(10)
-            conn.close()  # close the subsequent connections to pqs
+            # for conn in conn_a2pq.values():
+            #     conn.send("terminate")
+            #     print(f"terminate adapter {listener_port}")
+            #     # time.sleep(10)
+            #     conn.close()  # close the subsequent connections to pqs
 
-        break
+            # break
 
-    # data is a json object
+        # data is a json object
     data = json.loads(msg)  # parse the string
 
     TypeofRequest = data["TypeofRequest"]  # redundent
     Receiver = data["Receiver"]
     # forward data to corresponding priority queue
-    if data["TypeofRequest"] == "API":
+    if TypeofRequest == "API":
         conn_a2pq[Receiver].send(data)
     else:
         conn_a2pq["C2C"].send(data)

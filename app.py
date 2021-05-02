@@ -12,6 +12,7 @@ from time import sleep
 from request_handlers import *
 import os
 from dotenv import load_dotenv
+from curr_time import get_curr_time
 
 load_dotenv()
 
@@ -27,6 +28,7 @@ MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
 # setting up a flask app
 app = Flask(__name__)
+
 # random secret key
 app.secret_key = ';\x01\x03A\x7f\x1d\xa8\x9e\x06\xf3\xf2m\x10"\xea\x99\x97\'\xf3\xc3\x0fQa\xbc'
 
@@ -42,8 +44,6 @@ mail = Mail(app)
 reqID = 0
 
 sleep(12)
-start_adapter_connection()
-
 # DATABASE CONNECTION
 ##GCP
 # config = {
@@ -328,10 +328,12 @@ def string_reverse():
     if request.method == 'POST':
         out = "sfdf"
         global reqID
-        reqID += 1
+        local_reqid = reqID+1
+        
         string = request.form["string"]
-        RequestSender(session["username"], "reverse", string, time.time(),
-                      reqID)
+        RequestSender(session["username"], "reverse", string, get_curr_time(),
+                      local_reqid)
+        out = check_update(local_reqid)
         # out = json_dict["reversed_string"]
         return render_template("string_reverse.html",
                                out=out,
@@ -516,9 +518,15 @@ def client2client():
 
 
 # for a particular requesID the client will ping this route to check for any available updates
-@app.route('/check_update', methods=['GET'])
-def check_update():
-    pass
+def check_update(ID):
+    cursor = mysql.connection.cursor()
+    for i in range(0,15):
+        time.sleep(0.5)
+        cursor.execute("SELECT Response from AckLogs where RequestID = %s",(ID,))
+        if cursor.rowcount > 0:
+            out = cursor.fetchall()[0][0]
+            return out
+    out = "OOPS! Request Timed Out"
 
 
 def get_users():
@@ -534,5 +542,4 @@ def get_users():
 
 # starting the APP
 if __name__ == '__main__':
-    app.run(port=8080, debug=True)
-    # app.run(debug=True)
+    app.run(debug=True)

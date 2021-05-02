@@ -2,14 +2,14 @@ from multiprocessing.connection import Listener, Client
 import json
 from utils import find_priority_of_request
 
-
-def start_adapter_connection():
-    global conn_s2a
-    conn_s2a = Client(('localhost', 6000), authkey=b'secret password')
-    print("connection to adapter established")
-
-
+# def connect_http_to_adapter():
+#     conn_s2a = Client(('localhost', 6000), authkey=b'secret password')
+#     print("connection from http server to adapter established")
+#     return conn_s2a
+    
 def RequestSender(username, receiver, message, initial_timestamp, reqID):
+    conn_s2a = Client(('localhost', 6000), authkey=b'secret password')
+    print("connection from http server to adapter established")
     data = {}
     if receiver in ['reverse', 'instagram', 'translate', 'weather']:
         data["TypeofRequest"] = "API"
@@ -21,4 +21,5 @@ def RequestSender(username, receiver, message, initial_timestamp, reqID):
     data["InitialTimestamp"] = initial_timestamp
     data["RequestID"] = reqID
     data["RequestPriority"] = find_priority_of_request(reqID, username)
-    conn_s2a.send(data)
+    conn_s2a.send(json.dumps(data))
+    conn_s2a.send("terminate")

@@ -31,6 +31,8 @@ create table IF NOT EXISTS AckLogs(
 	-- API name / Receiver client
 	RequestPayload text not null,
 	-- if text then include, for file transfer use the file name
+	Response text not NULL,
+	-- Response of API 
 	InitialTimestamp timestamp not null,
 	-- time when request arrives at the HTTP server from a user client
 	FinalTimestamp timestamp not null,
