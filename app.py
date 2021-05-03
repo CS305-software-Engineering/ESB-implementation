@@ -1,4 +1,5 @@
 # importing helper libraries
+from typing import final
 from flask import Flask, render_template, url_for, flash, redirect, request, session, jsonify, send_file, Response
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
 from utils import *
@@ -14,6 +15,7 @@ import os
 from dotenv import load_dotenv
 from curr_time import get_curr_time
 from smtplib import SMTPException
+from flask import request
 
 load_dotenv()
 
@@ -548,6 +550,28 @@ def check_update(ID):
         out = {"reversed_string": "$", "status": "absent"}
         # status is added to convey that the data is not yet present
         return out
+
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
+@app.route('/terminate/', methods=['GET'])
+def terminate_connection():
+    try:
+        if "username" in session and session["username"] == admin["username"]:
+            Terminator()  #this will terminate the pipeline
+            return "terminated"
+        else:
+            return "not allowed"
+    finally:
+        func = request.environ.get('werkzeug.server.shutdown')
+        if func is None:
+            raise RuntimeError('Not running with the Werkzeug Server')
+        func()
 
 
 def get_users():

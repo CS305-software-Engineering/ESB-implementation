@@ -48,7 +48,7 @@ while running:
             # time.sleep(10)
             conn.close()  # close the subsequent connections to pqs
 
-        # break
+        break
 
         # data is a json object
     data = json.loads(msg)  # parse the string

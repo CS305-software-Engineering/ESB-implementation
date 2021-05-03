@@ -6,7 +6,13 @@ from utils import find_priority_of_request
 #     conn_s2a = Client(('localhost', 6000), authkey=b'secret password')
 #     print("connection from http server to adapter established")
 #     return conn_s2a
-    
+
+
+def Terminator():
+    conn_s2a = Client(('localhost', 6000), authkey=b'secret password')
+    conn_s2a.send("terminate")
+
+
 def RequestSender(username, receiver, message, initial_timestamp, reqID):
     conn_s2a = Client(('localhost', 6000), authkey=b'secret password')
     print("connection from http server to adapter established")
