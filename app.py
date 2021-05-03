@@ -41,8 +41,6 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
-reqID = 0
-
 sleep(12)
 # DATABASE CONNECTION
 ##GCP
@@ -73,12 +71,24 @@ admin["password"] = str(ADMIN_PASSWORD)
 
 bcrypt = Bcrypt(app)
 # ROUTES
-
+reqID = 0
+def get_next_reqID():
+    cursor = mysql.connection.cursor()
+    cursor.execute('select RequestID from AckLogs')
+    reqids = list(cursor.fetchall())
+    list_reqids = []
+    global reqID
+    if len(list_reqids) == 0:
+        reqID = 1
+    else:
+        for val in reqids:
+            list_reqids.append(int(val[0]))
+        reqID += max(list_reqids)
+        reqID += 1
 
 # very first page of the ESB - login for admins
 @app.route("/", methods=['GET', 'POST'])
 def welcome_admin():
-    print("hello")
     # if the cookies for username are already set then the user will be redirected to his/her dashboard
     # if s/he is admin
     if "username" in session and session["username"] == admin["username"]:
@@ -326,23 +336,23 @@ def string_reverse():
         return redirect(url_for("welcome_admin"))
     out = "Output will be shown here."
     if request.method == 'POST':
-        out = "sfdf"
+        get_next_reqID()
         global reqID
-        local_reqid = reqID+1
-        
+        local_reqid = reqID
         string = request.form["string"]
         RequestSender(session["username"], "reverse", string, get_curr_time(),
                       local_reqid)
-        out = check_update(local_reqid)
-        # out = json_dict["reversed_string"]
+        out = "Request Sent!"
         return render_template("string_reverse.html",
                                out=out,
                                filename=filename,
-                               username=session["username"])
+                               username=session["username"],
+                               reqID = local_reqid)
     return render_template("string_reverse.html",
                            out=out,
                            filename=filename,
-                           username=session["username"])
+                           username=session["username"],
+                           reqID = 0)
 
 
 # instagram API
@@ -360,34 +370,39 @@ def instagram():
         return redirect(url_for("welcome_admin"))
     out = "Output will be shown here."
     if request.method == 'POST':
-        out = []
         flag = 1
+        get_next_reqID()
+        global reqID
+        local_reqid = reqID
         string = request.form["string"]
-        # this function is implemented in rapidapi.py file
-        str_out = insta_api(string)
-        json_dict = json.loads(str_out)
-        if "status" in json_dict and json_dict["status"] == "fail":
-            flag = 0
-            out = "Oops! Profile not found"
-            return render_template("insta.html",
-                                   out=out,
-                                   filename=filename,
-                                   username=session["username"],
-                                   flag=flag)
-        bio = json_dict["biography"]
-        followers = json_dict["edge_followed_by"]["count"]
-        following = json_dict["edge_follow"]["count"]
-        out = [bio, followers, following]
+        RequestSender(session["username"], "instagram", string, get_curr_time(),
+                      local_reqid)
+        
+        out = "Request Sent!"
+        # if "status" in json_dict and json_dict["status"] == "fail":
+        #     flag = 0
+        #     out = "Oops! Profile not found"
+        #     return render_template("insta.html",
+        #                            out=out,
+        #                            filename=filename,
+        #                            username=session["username"],
+        #                            flag=flag)
+        # bio = json_dict["biography"]
+        # followers = json_dict["edge_followed_by"]["count"]
+        # following = json_dict["edge_follow"]["count"]
+        # out = [bio, followers, following]
         return render_template("insta.html",
                                out=out,
                                filename=filename,
                                username=session["username"],
-                               flag=flag)
+                               flag=flag,
+                               reqID = local_reqid)
     return render_template("insta.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
-                           flag=flag)
+                           flag=flag,
+                           reqID=0)
 
 
 # weather API
@@ -454,33 +469,26 @@ def translator():
     out = "Output will be shown here."
     flag = 0
     if request.method == 'POST':
-        out = []
         flag = 1
+        get_next_reqID()
+        global reqID
+        local_reqid = reqID
         string = request.form["string"]
-        # this function is implemented in rapidapi.py file
-        str_out = translate_api(string)
-        json_dict = json.loads(str_out)
-        lang_code = json_dict["data"]["detections"][0][0]["language"]
-        confidence = json_dict["data"]["detections"][0][0]["confidence"]
-        lang_name = ""
-        f = open('static/languages_codes.json')
-        data = json.load(f)
-        for i in data["code2lang"]:
-            if (i["alpha2"] == lang_code):
-                lang_name = i["English"]
-                break
-        out.append(lang_name)
-        out.append(confidence)
+        RequestSender(session["username"], "translate", string, get_curr_time(),
+                      local_reqid)
+        out = "Request Sent!"
         return render_template("detect.html",
                                out=out,
                                filename=filename,
                                username=session["username"],
-                               flag=flag)
+                               flag=flag,
+                               reqID = local_reqid)
     return render_template("detect.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
-                           flag=flag)
+                           flag=flag,
+                           reqID = 0)
 
 
 @app.route('/client2client', methods=['GET', 'POST'])
@@ -518,15 +526,18 @@ def client2client():
 
 
 # for a particular requesID the client will ping this route to check for any available updates
+@app.route('/check_update/<ID>',methods=['GET', 'POST'])
 def check_update(ID):
-    cursor = mysql.connection.cursor()
-    for i in range(0,15):
-        time.sleep(0.5)
+    if request.method == 'POST':
+        print("jeskfhesjfesfjdsb")
+        cursor = mysql.connection.cursor()
         cursor.execute("SELECT Response from AckLogs where RequestID = %s",(ID,))
         if cursor.rowcount > 0:
             out = cursor.fetchall()[0][0]
+            print(out)
             return out
-    out = "OOPS! Request Timed Out"
+        out = {"reversed_string" : "Waiting for response..."}
+        return out
 
 
 def get_users():

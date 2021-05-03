@@ -54,3 +54,4 @@ create table if not EXISTS Pending(
 	InitialTimestamp timestamp not null
 	-- time when request arrives at the HTTP server from a user client
 );
+

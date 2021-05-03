@@ -10,28 +10,53 @@
             <button type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div class="output">
-        {% if flag == 0 %}
-            {{out}}
-        {% endif %}
-        {% if flag == 1 %}
-        <table class="table">
-            <tbody>
-                <tr>
-                    <td>Biography</td>
-                    <td>{{out[0]}}</td>
-                </tr>
-                <tr>
-                    <td>Followers</td>
-                    <td>{{out[1]}}</td>
-                </tr>
-                <tr>
-                    <td>Following</td>
-                    <td>{{out[2]}}</td>
-                </tr>
-            </tbody>
-        </table>
-        {% endif %}
+    <div id="out" class="output">
+        {{out}}
     </div>
 </div>
+<script>
+    var out = document.getElementById("out")
+    ID = {{reqID}}
+    console.log(ID)
+    async function check_updates(){
+        while(1){
+            console.log(ID)
+            await new Promise(r => setTimeout(r, 2000));
+            await fetch(`/check_update/${ID}`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if ("reversed_string" in data){
+                out.innerHTML = data["reversed_string"]
+            }
+            else if ("status" in data && data["status"] == "fail"){
+                out.innerHTML = "Oops! Profile not found";
+            }
+            else{
+                out.innerHTML = `<table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Biography</td>
+                            <td>`+data["biography"]+`</td>
+                        </tr>
+                        <tr>
+                            <td>Followers</td>
+                            <td>`+data["edge_followed_by"]["count"]+`</td>
+                        </tr>
+                        <tr>
+                            <td>Following</td>
+                            <td>`+ data["edge_follow"]["count"]+`</td>
+                        </tr>
+                    </tbody>
+                </table>`
+            }
+        });
+        }
+    };
+    check_updates();
+</script>
 {% endblock content %}

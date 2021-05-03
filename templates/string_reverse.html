@@ -7,11 +7,33 @@
             <input type="text" name="string" id="string" placeholder="Enter the string to be reversed">
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-outline-info">Send</button>
+            <button id="reqsent" type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div class="output">
+    <div id="out" class="output">
         {{out}}
     </div>
 </div>
+<script>
+    var out = document.getElementById("out")
+    ID = {{reqID}}
+    console.log(ID)
+    async function check_updates(){
+        while(1){
+            console.log(ID)
+            await new Promise(r => setTimeout(r, 2000));
+            await fetch(`/check_update/${ID}`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).then(response => response.json())
+        .then(data => {
+            out.innerHTML = data["reversed_string"];
+        });
+        }
+    };
+    check_updates();
+</script>
 {% endblock content %} 
