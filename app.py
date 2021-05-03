@@ -73,18 +73,17 @@ admin["password"] = str(ADMIN_PASSWORD)
 
 bcrypt = Bcrypt(app)
 # ROUTES
-reqID = 0
 
 
 def get_next_reqID():
-    global reqID
     cursor = mysql.connection.cursor()
     cursor.execute('select * from Variables;')
     content = cursor.fetchall()
     reqID = int(content[0][0])
-    cursor.execute(f'update Variables set RequestID={reqID + 1};')
+    cursor.execute(f"update Variables set RequestID={reqID + 1};")
     mysql.connection.commit()
     cursor.close()
+    return reqID
 
 
 # very first page of the ESB - login for admins
@@ -352,9 +351,7 @@ def string_reverse():
         return redirect(url_for("welcome_admin"))
     out = "Output will be shown here."
     if request.method == 'POST':
-        get_next_reqID()
-        global reqID
-        local_reqid = reqID
+        local_reqid = get_next_reqID()
         string = request.form["string"]
         RequestSender(session["username"], "reverse", string, get_curr_time(),
                       local_reqid)
@@ -393,9 +390,7 @@ def instagram():
     out = "Output will be shown here."
     if request.method == 'POST':
         flag = 1
-        get_next_reqID()
-        global reqID
-        local_reqid = reqID
+        local_reqid = get_next_reqID()
         string = request.form["string"]
         RequestSender(session["username"], "instagram", string,
                       get_curr_time(), local_reqid)
@@ -433,9 +428,7 @@ def weather():
     flag = 0
     if request.method == 'POST':
         flag = 1
-        get_next_reqID()
-        global reqID
-        local_reqid = reqID
+        local_reqid = get_next_reqID()
         string = request.form["string"]
         RequestSender(session["username"], "weather", string, get_curr_time(),
                       local_reqid)
@@ -484,9 +477,7 @@ def translator():
     flag = 0
     if request.method == 'POST':
         flag = 1
-        get_next_reqID()
-        global reqID
-        local_reqid = reqID
+        local_reqid = get_next_reqID()
         string = request.form["string"]
         RequestSender(session["username"], "translate", string,
                       get_curr_time(), local_reqid)
@@ -519,9 +510,7 @@ def client2client():
     out = "Output will be shown here."
     all_users = get_users()
     if request.method == 'POST':
-        get_next_reqID()
-        global reqID
-        local_reqid = reqID
+        local_reqid = get_next_reqID()
         username = request.form["string"]
         if username not in all_users:
             out = "There's no user with username " + username
@@ -561,6 +550,10 @@ def check_update_client(username):
             print("in app.py before delete")
             cursor.execute(
                 f"DELETE from Pending where RequestID = {requestID}")
+            cursor.execute(
+                f"UPDATE AckLogs set ReturnResponseStatus = 1 where RequestID = {requestID}"
+            )
+            # cursor.execute(f'update Variables set RequestID={reqID + 1};')
             mysql.connection.commit()
             out = {}
             out["message"] = message
@@ -584,6 +577,9 @@ def check_update(ID):
             out = cursor.fetchall()[0][0]
             print(out)
             cursor.execute(f"DELETE from Pending where RequestID = {ID}")
+            cursor.execute(
+                f"UPDATE AckLogs set ReturnResponseStatus = 1 where RequestID = {ID}"
+            )
             mysql.connection.commit()
             return out
         out = {"incomplete": "absent"}

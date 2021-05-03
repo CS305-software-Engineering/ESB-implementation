@@ -141,6 +141,7 @@ while running:
         response = response2
 
     try:
+        # time.sleep(5) # to demonstrate the usage of fetching resulst in API calling
         cur = conn.cursor()
         cur.execute(
             'INSERT into Pending(RequestID,Username,Receiver,RequestPayload,InitialTimestamp,Response) values(%s,%s,%s,%s,%s,%s)',
@@ -153,7 +154,12 @@ while running:
             'INSERT into AckLogs(RequestID,Username,TypeofRequest,Receiver,RequestPayload,Response,InitialTimestamp,FinalTimestamp,ServiceResponseStatus,ReturnResponseStatus) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
             (str(reqID), str(username), str(typeofreq), str(receiver),
              str(message), str(response), initial_timestamp, final_timestamp,
-             200, 200))
+             200, 0))
+        conn.commit()
+
+        cur.execute(
+            "DELETE FROM Pending WHERE InitialTimestamp < (NOW() - 600);")
+        # this is for 60 * 10 that is 10 minutes
         conn.commit()
         print("in dispatcher wrote to AckLogs")
         cur.close()
