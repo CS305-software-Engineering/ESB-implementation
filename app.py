@@ -313,15 +313,18 @@ def user_signup():
 
     return render_template("user_signup.html", unames=unames)
 
+
 # user logs
-@app.route("/logs/<username>",methods=['GET','POST'])
+@app.route("/logs/<username>", methods=['GET', 'POST'])
 def user_logs(username):
     cursor = mysql.connection.cursor()
     # fetching all logs of that user from AckLogs table so that they can be shown on admin dashboard
-    cursor.execute("SELECT * from AckLogs where Username = %s",(str(username),))
+    cursor.execute("SELECT * from AckLogs where Username = %s",
+                   (str(username), ))
     user_logs = cursor.fetchall()
     print(user_logs)
-    return render_template("logs.html",logs=user_logs,n=len(user_logs))
+    return render_template("logs.html", logs=user_logs, n=len(user_logs))
+
 
 # route for logging out
 @app.route("/logout")
@@ -593,7 +596,7 @@ def shutdown_server():
 
 
 @app.route('/terminate/', methods=['GET'])
-def terminate_connection():
+def terminate():
     try:
         if "username" in session and session["username"] == admin["username"]:
             Terminator()  #this will terminate the pipeline
