@@ -1,5 +1,15 @@
 # helping libraries
 import http.client
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+
+WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
+INSTA_API_KEY = os.getenv('INSTA_API_KEY')
+TRANSLATE_API_KEY = os.getenv('TRANSLATE_API_KEY')
+
 
 # method that interacts with string reverse API
 # input : a string that needs to be reversed
@@ -23,7 +33,7 @@ def weather_api(city):
     conn = http.client.HTTPSConnection("community-open-weather-map.p.rapidapi.com")
     # RAPIDAPI CREDENTIALS
     headers = {
-        'x-rapidapi-key': "48a9d3acbemsh51e3d6835ad11bep1a253cjsne66f78646111",
+        'x-rapidapi-key': str(WEATHER_API_KEY),
         'x-rapidapi-host': "community-open-weather-map.p.rapidapi.com"
     }
     # prepare the input as accepted by API
@@ -45,7 +55,7 @@ def insta_api(username):
     conn = http.client.HTTPSConnection("instagram40.p.rapidapi.com")
     # RAPIDAPI CREDENTIALS
     headers = {
-        'x-rapidapi-key': "b9474dd192mshb0cb1c4d6f2a220p129532jsn1a719b07423c",
+        'x-rapidapi-key': str(INSTA_API_KEY),
         'x-rapidapi-host': "instagram40.p.rapidapi.com"
     }
     # prepare the input as accepted by API
@@ -69,7 +79,7 @@ def translate_api(payload):
     headers = {
         'content-type': "application/x-www-form-urlencoded",
         'accept-encoding': "application/gzip",
-        'x-rapidapi-key': "48a9d3acbemsh51e3d6835ad11bep1a253cjsne66f78646111",
+        'x-rapidapi-key': str(TRANSLATE_API_KEY),
         'x-rapidapi-host': "google-translate1.p.rapidapi.com"
     }
     # prepare the input as accepted by API
@@ -83,5 +93,3 @@ def translate_api(payload):
     status=res.status
     # return the response
     return data.decode("utf-8")
-
-
