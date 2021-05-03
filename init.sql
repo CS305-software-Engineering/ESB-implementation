@@ -62,4 +62,9 @@ create table if not EXISTS Variables(
 	-- to store the RequestID for a request
 );
 
+delete from Variables;
+delete from Pending;
+delete from AckLogs;
+delete from Users;
+delete from SignupConfirmation;
 insert into Variables values (1);
