@@ -55,7 +55,7 @@ def insta_api(username):
     conn = http.client.HTTPSConnection("instagram40.p.rapidapi.com")
     # RAPIDAPI CREDENTIALS
     headers = {
-        'x-rapidapi-key': str(INSTA_API_KEY),
+        'x-rapidapi-key': "b9474dd192mshb0cb1c4d6f2a220p129532jsn1a719b07423c",
         'x-rapidapi-host': "instagram40.p.rapidapi.com"
     }
     # prepare the input as accepted by API
@@ -93,3 +93,5 @@ def translate_api(payload):
     status=res.status
     # return the response
     return data.decode("utf-8")
+
+print(insta_api("nagasrikarkanniganti"))
