@@ -43,7 +43,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
-sleep(12)
+sleep(5)
 # DATABASE CONNECTION
 ##GCP
 # config = {
@@ -422,8 +422,8 @@ def weather():
         global reqID
         local_reqid = reqID
         string = request.form["string"]
-        RequestSender(session["username"], "instagram", string,
-                      get_curr_time(), local_reqid)
+        RequestSender(session["username"], "weather", string, get_curr_time(),
+                      local_reqid)
 
         out = "Request Sent!"
         return render_template("weather.html",
@@ -431,15 +431,18 @@ def weather():
                                filename=filename,
                                username=session["username"],
                                flag=flag,
+                               reqID=local_reqid,
                                check=1)
     return render_template("weather.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
                            flag=flag,
+                           reqID=0,
                            check=0)
 
-# helper 
+
+# helper
 @app.route("/givemelanguage/<code>", methods=['GET', 'POST'])
 def givemelang(code):
     if request.method == 'POST':
@@ -449,8 +452,9 @@ def givemelang(code):
             if (i["alpha2"] == code):
                 lang_name = i["English"]
                 break
-        return {"language":lang_name}
-    
+        return {"language": lang_name}
+
+
 # Google Translate API
 @app.route("/translator", methods=['GET', 'POST'])
 def translator():
@@ -498,28 +502,58 @@ def client2client():
     else:
         return redirect(url_for("welcome_admin"))
     out = "Output will be shown here."
-    global reqID
-    reqID += 1
-    online_users = get_users()
+    all_users = get_users()
     if request.method == 'POST':
+        get_next_reqID()
+        global reqID
+        local_reqid = reqID
         username = request.form["string"]
-        if username not in online_users:
+        if username not in all_users:
             out = "There's no user with username " + username
         else:
             message = request.form["message"]
-            curr_timestamp = time.time()
-            out = C2CHandler(session["username"], username, message,
-                             curr_timestamp, reqID)
+            RequestSender(session["username"], username, message,
+                          get_curr_time(), local_reqid)
+            out = "Request Sent!"
             return render_template("client2client.html",
-                                   online_users=online_users,
+                                   online_users=all_users,
                                    out=out,
                                    filename=filename,
                                    username=session["username"])
     return render_template("client2client.html",
-                           online_users=online_users,
+                           online_users=all_users,
                            out=out,
                            filename=filename,
                            username=session["username"])
+
+
+@app.route('/check_update_client/<username>', methods=['GET', 'POST'])
+def check_update_client(username):
+    print("in app.py check_update_called")
+    if request.method == 'POST':
+        cursor = mysql.connection.cursor()
+        print("in app.py before select")
+        print("in app.py request")
+        cursor.execute(
+            "SELECT RequestID, Response from Pending where Receiver = %s",
+            (username, ))
+        if cursor.rowcount > 0:
+            local = cursor.fetchall()[0]
+            requestID = local[0]
+            message = local[1]
+            print("in app.py", message)
+            print("in app.py before delete")
+            cursor.execute(
+                f"DELETE from Pending where RequestID = {requestID}")
+            mysql.connection.commit()
+            out = {}
+            out["message"] = message
+            out = json.dumps(out)
+            return out
+        out = {"incomplete": "absent"}
+        # status is added to convey that the data is not yet present
+        return out
+    pass
 
 
 # for a particular requesID the client will ping this route to check for any available updates
@@ -535,7 +569,7 @@ def check_update(ID):
             cursor.execute(f"DELETE from Pending where RequestID = {ID}")
             mysql.connection.commit()
             return out
-        out = {"reversed_string": "$", "status": "absent"}
+        out = {"incomplete": "absent"}
         # status is added to convey that the data is not yet present
         return out
 

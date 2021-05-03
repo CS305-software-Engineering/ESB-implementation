@@ -17,50 +17,47 @@
 <script>
     var out = document.getElementById("out")
     var check = {{ check }}
-    ID = {{reqID}}
+    ID = {{ reqID }}
     console.log(ID)
-    async function check_updates(){
-        while(1 && check){
+    async function check_updates() {
+        while (check) {
             console.log(ID)
             await new Promise(r => setTimeout(r, 2000));
             await fetch(`/check_update/${ID}`, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': 'application/json'
-            }
-        }).then(response => {console.log(response);return response.json()})
-        .then(data => {
-            console.log(data)
-            if ("reversed_string" in data){
-                out.innerHTML = data["reversed_string"];
-            }
-            else if ("status" in data && data["status"] == "fail"){
-                out.innerHTML = "Oops! Profile not found";
-            }
-            else{
-                out.innerHTML = `<table class="table">
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(response => { console.log(response); return response.json() })
+                .then(data => {
+                    console.log(data)
+                    if ("incomplete" in data) {
+                        out.innerHTML = "Waiting for response..."
+                    }
+                    else if ("status" in data && data["status"] == "fail") {
+                        out.innerHTML = "Oops! Profile not found";
+                    }
+                    else {
+                        out.innerHTML = `<table class="table">
                     <tbody>
                         <tr>
                             <td>Biography</td>
-                            <td>`+data["biography"]+`</td>
+                            <td>`+ data["biography"] + `</td>
                         </tr>
                         <tr>
                             <td>Followers</td>
-                            <td>`+data["followers"]+`</td>
+                            <td>`+ data["followers"] + `</td>
                         </tr>
                         <tr>
                             <td>Following</td>
-                            <td>`+ data["following"]+`</td>
+                            <td>`+ data["following"] + `</td>
                         </tr>
                     </tbody>
                 </table>`;
-                check = false;
-            }
-        });
-        if(check==false){
-            break;
-        }
+                        check = false;
+                    }
+                });
         }
     };
     check_updates();

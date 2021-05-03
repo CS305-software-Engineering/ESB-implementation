@@ -12,19 +12,16 @@
     </form>
     <div id="out" class="output">
         {{out}}
-        {% if flag == 1 %}
-        {{out[0]}}, {{out[1]}}
 
-        {% endif %}
     </div>
 </div>
 <script>
     var out = document.getElementById("out")
     var ID = {{ reqID }}
-    var check = {{check}}
+    var check = {{ check }}
     console.log(ID)
     async function check_updates() {
-        while (1 && check) {
+        while (check) {
             console.log(ID)
             await new Promise(r => setTimeout(r, 2000));
             await fetch(`/check_update/${ID}`, {
@@ -35,51 +32,47 @@
                 }
             }).then(response => response.json())
                 .then(data => {
-                    out.innerHTML = data["reversed_string"];
-                    if ("status" in data) {
+                    if ("incomplete" in data) {
                         console.log("in the if part")
                         out.innerHTML = "Waiting for response..."
-                    } 
-                    else if( "message" in data){
+                    }
+                    else if ("message" in data) {
                         out.innerHTML = data["message"]
                     }
                     else {
-                        out.innerHTML = data["main"]+`  `+data["desc"]+`<table class="table">
+                        out.innerHTML = data["main"] + `  ` + data["desc"] + `<table class="table">
                                             <tbody>
                                                 <tr>
                                                     <td>Temperature</td>
-                                                    <td>`+data["temp"]+`</td>
+                                                    <td>`+ data["temp"] + `</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Feels like</td>
-                                                    <td>`+data["feels"]+`</td>
+                                                    <td>`+ data["feels"] + `</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Minimum Temperature</td>
-                                                    <td>`+data["temp_min"]+`</td>
+                                                    <td>`+ data["temp_min"] + `</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Maximum Temperature</td>
-                                                    <td>`+data["temp_max"]+`</td>
+                                                    <td>`+ data["temp_max"] + `</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Pressure</td>
-                                                    <td>`+data["pressure"]+`</td>
+                                                    <td>`+ data["pressure"] + `</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Humidity</td>
-                                                    <td>`+data["humidity"]+`</td>
+                                                    <td>`+ data["humidity"] + `</td>
                                                 </tr>
                                             </tbody>
                                         </table>`
                         check = false // break here
                     }
                 });
-            if (check == false) {
-                break;
-            }
         }
     };
     check_updates();
 </script>
-{% endblock content %}     
+{% endblock content %}

@@ -5,7 +5,6 @@ import os
 
 load_dotenv()
 
-
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 INSTA_API_KEY = os.getenv('INSTA_API_KEY')
 TRANSLATE_API_KEY = os.getenv('TRANSLATE_API_KEY')
@@ -26,25 +25,29 @@ def str_rev_api(string):
     # return the response
     return data.decode("utf-8")
 
+
 #current weather data
 # input : city name
 def weather_api(city):
     # setup connection
-    conn = http.client.HTTPSConnection("community-open-weather-map.p.rapidapi.com")
+    conn = http.client.HTTPSConnection(
+        "community-open-weather-map.p.rapidapi.com")
     # RAPIDAPI CREDENTIALS
     headers = {
         'x-rapidapi-key': "48a9d3acbemsh51e3d6835ad11bep1a253cjsne66f78646111",
         'x-rapidapi-host': "community-open-weather-map.p.rapidapi.com"
     }
     # prepare the input as accepted by API
-    ip = "/weather?q=" + str(city) + "%2Cuk&lat=0&lon=0&callback=test&id=2172797&lang=null&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html"
+    ip = "/weather?q=" + str(
+        city
+    ) + "%2Cuk&lat=0&lon=0&callback=test&id=2172797&lang=null&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html"
     # request the output
     conn.request("GET", ip, headers=headers)
     # Store the response and read it
     res = conn.getresponse()
     data = res.read()
     # status of request
-    status=res.status
+    status = res.status
     # return the response
     return data.decode("utf-8")
 
@@ -58,7 +61,7 @@ def insta_api(username):
         'x-rapidapi-key': "b9474dd192mshb0cb1c4d6f2a220p129532jsn1a719b07423c",
         'x-rapidapi-host': "instagram40.p.rapidapi.com"
     }
-    
+
     # prepare the input as accepted by API
     ip = "/account-info?username=" + str(username)
     # request the output
@@ -67,7 +70,7 @@ def insta_api(username):
     res = conn.getresponse()
     data = res.read()
     # status of request
-    status=res.status
+    status = res.status
     # return the response
     return data.decode("utf-8")
 
@@ -80,18 +83,18 @@ def translate_api(payload):
     headers = {
         'content-type': "application/x-www-form-urlencoded",
         'accept-encoding': "application/gzip",
-        'x-rapidapi-key': "48a9d3acbemsh51e3d6835ad11bep1a253cjsne66f78646111",
+        'x-rapidapi-key': "b9474dd192mshb0cb1c4d6f2a220p129532jsn1a719b07423c",
         'x-rapidapi-host': "google-translate1.p.rapidapi.com"
     }
     # prepare the input as accepted by API
     payload_final = "q=" + str(payload)
     # request the output
-    conn.request("POST", "/language/translate/v2/detect", payload_final,headers)
+    conn.request("POST", "/language/translate/v2/detect", payload_final,
+                 headers)
     # Store the response and read it
     res = conn.getresponse()
     data = res.read()
     # status of request
-    status=res.status
+    status = res.status
     # return the response
     return data.decode("utf-8")
-

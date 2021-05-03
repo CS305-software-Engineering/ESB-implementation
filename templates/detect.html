@@ -11,46 +11,38 @@
         </div>
     </form>
     <div id="out" class="output">
-        {% if flag == 0 %}
-            {{out}}
-        {% endif %}
-        {% if flag == 1 %}
-        {{out[0]}} Language Detected with {{out[1]}} confidence.
-        {% endif %}
+        {{out}}
     </div>
 </div>
 <script>
     var out = document.getElementById("out");
-    var check = {{check}};
-    ID = {{reqID}};
+    var check = {{ check }};
+    ID = {{ reqID }};
     console.log(ID);
-    async function check_updates(){
-        while(1 && check){
+    async function check_updates() {
+        while (check) {
             console.log(ID);
             await new Promise(r => setTimeout(r, 2000));
             await fetch(`/check_update/${ID}`, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': 'application/json'
-            }
-        }).then(response => response.json())
-        .then(data => {
-            if ("reversed_string" in data){
-                out.innerHTML = data["reversed_string"];
-            }
-            else{
-                lang_name = data["language"];
-                confidence = data["confidence"];
-                out.innerHTML = lang_name+` Language Detected with `+confidence+` confidence.`;
-                check = false;
-            }
-        });
-        if(check == false){
-            break;
-        }
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    if ("incomplete" in data) {
+                        out.innerHTML = "Waiting for response..."
+                    }
+                    else {
+                        lang_name = data["language"];
+                        confidence = data["confidence"];
+                        out.innerHTML = lang_name + ` Language Detected with ` + confidence + ` confidence.`;
+                        check = false;
+                    }
+                });
         }
     };
     check_updates();
 </script>
-{% endblock content %}       
+{% endblock content %}

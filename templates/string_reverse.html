@@ -20,7 +20,7 @@
     var check = {{ check }}
     console.log(ID)
     async function check_updates() {
-        while (1 && check) {
+        while (check) {
             console.log(ID)
             await new Promise(r => setTimeout(r, 2000));
             await fetch(`/check_update/${ID}`, {
@@ -32,7 +32,7 @@
             }).then(response => response.json())
                 .then(data => {
                     out.innerHTML = data["reversed_string"];
-                    if ("status" in data) {
+                    if ("incomplete" in data) {
                         console.log("in the if part")
                         out.innerHTML = "Waiting for response..."
                     } else {
@@ -41,9 +41,6 @@
                         check = false // break here
                     }
                 });
-            if (check == false) {
-                break;
-            }
         }
     };
     check_updates();

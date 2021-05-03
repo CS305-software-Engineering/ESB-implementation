@@ -6,7 +6,7 @@ import sys
 from max_heap import *
 import time
 
-time.sleep(6)
+time.sleep(3)
 listener_port = int(sys.argv[1])
 processor_port = int(sys.argv[2])
 

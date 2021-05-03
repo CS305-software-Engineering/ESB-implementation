@@ -16,7 +16,7 @@
                     <button type="submit" class="btn btn-outline-info">Send</button>
                 </div>
             </form>
-            <div style="width:25vw;" class="output">
+            <div style="width:25vw;" class="output" id="out">
                 {{out}}
             </div>
         </div>
@@ -25,19 +25,51 @@
                 <div class="card-body">
                     <h5 class="card-title">Users</h5>
                     <p class="card-text">
-                        <table class="table">
-                            <tbody>
-                                {% for name in online_users %}
-                                <tr>
-                                    <td>{{name}}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <table class="table">
+                        <tbody>
+                            {% for name in online_users %}
+                            <tr>
+                                <td>{{name}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                     </p>
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 </div>
+<script>
+    var out = document.getElementById("out")
+    ID = "{{ username }}"
+    console.log(ID)
+    var previous = ""
+    async function check_updates() {
+        while (true) {
+            console.log(ID)
+            await new Promise(r => setTimeout(r, 2000));
+            await fetch(`/check_update_client/${ID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    // out.innerHTML = data["message"];
+                    if ("incomplete" in data) {
+                        console.log("in the if part")
+                        out.innerHTML = previous + "\nWaiting for response..."
+                    } else {
+                        console.log("in the else part")
+                        previous += "\n" + data["message"]
+                        out.innerHTML = previous
+                        // check =1 false // break here
+                    }
+                });
+        }
+    };
+    check_updates();
+</script>
 {% endblock content %}

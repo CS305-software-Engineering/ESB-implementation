@@ -11,7 +11,7 @@ from multiprocessing.connection import Listener, Client
 import json
 import time
 
-time.sleep(8)
+time.sleep(4)
 
 listener_port = 6000
 # dictionary containing port numbers for different pq
@@ -20,7 +20,7 @@ port_numbers = {
     "weather": 6002,
     "translate": 6003,
     "reverse": 6004,
-    # "C2C": 6005
+    "C2C": 6005
 }
 
 # dictionary containing connections to priority queues
@@ -45,7 +45,6 @@ while running:
         for conn in conn_a2pq.values():
             conn.send("terminate")
             print(f"terminate adapter {listener_port}")
-            # time.sleep(10)
             conn.close()  # close the subsequent connections to pqs
 
         break

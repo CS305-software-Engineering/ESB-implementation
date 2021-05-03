@@ -5,13 +5,13 @@ import sys
 import time
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
 
-time.sleep(4)
+time.sleep(2)
 input_ports = {
     "instagram": 8001,
     "weather": 8002,
     "translate": 8003,
     "reverse": 8004,
-    # "C2C": 8005
+    "C2C": 8005
 }
 
 processor_port = int(sys.argv[1])
