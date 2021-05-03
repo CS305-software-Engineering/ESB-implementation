@@ -13,6 +13,7 @@ from request_handlers import *
 import os
 from dotenv import load_dotenv
 from curr_time import get_curr_time
+from smtplib import SMTPException
 
 load_dotenv()
 
@@ -72,19 +73,16 @@ admin["password"] = str(ADMIN_PASSWORD)
 bcrypt = Bcrypt(app)
 # ROUTES
 reqID = 0
+
 def get_next_reqID():
-    cursor = mysql.connection.cursor()
-    cursor.execute('select RequestID from AckLogs')
-    reqids = list(cursor.fetchall())
-    list_reqids = []
     global reqID
-    if len(list_reqids) == 0:
-        reqID = 1
-    else:
-        for val in reqids:
-            list_reqids.append(int(val[0]))
-        reqID += max(list_reqids)
-        reqID += 1
+    cursor = mysql.connection.cursor()
+    cursor.execute('select * from Variables;')
+    content = cursor.fetchall()
+    reqID = int(content[0][0])
+    cursor.execute(f'update Variables set RequestID={reqID + 1};')
+    mysql.connection.commit()
+    cursor.close()
 
 # very first page of the ESB - login for admins
 @app.route("/", methods=['GET', 'POST'])
@@ -377,7 +375,7 @@ def instagram():
         string = request.form["string"]
         RequestSender(session["username"], "instagram", string, get_curr_time(),
                       local_reqid)
-        
+
         out = "Request Sent!"
         # if "status" in json_dict and json_dict["status"] == "fail":
         #     flag = 0
