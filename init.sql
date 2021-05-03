@@ -55,3 +55,9 @@ create table if not EXISTS Pending(
 	-- time when request arrives at the HTTP server from a user client
 );
 
+create table if not EXISTS Variables(
+	RequestID varchar(20) not null
+	-- to store the RequestID for a request
+);
+
+insert into Variables values (1);
