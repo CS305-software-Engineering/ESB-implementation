@@ -323,7 +323,10 @@ def user_logs(username):
                    (str(username), ))
     user_logs = cursor.fetchall()
     print(user_logs)
-    return render_template("logs.html", logs=user_logs, n=len(user_logs))
+    return render_template("logs.html",
+                           logs=user_logs,
+                           n=len(user_logs),
+                           username=username)
 
 
 # route for logging out

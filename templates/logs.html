@@ -1,11 +1,11 @@
 {% extends "base2.html" %}
 {% block content %}
-    <div class="main">
-        <div id="logs" >
-            <p>Logs</p>
-            <table class="table">
-                <thead>
-                    <tr>
+<div class="main">
+    <div id="logs">
+        <p>Logs</p>
+        <table class="table">
+            <thead>
+                <tr>
                     <th scope="col">Request ID</th>
                     <th scope="col">Type of request</th>
                     <th scope="col">Receiver</th>
@@ -13,22 +13,22 @@
                     <th scope="col">Final Timestamp</th>
                     <th scope="col">Service Response status</th>
                     <th scope="col">Return Response status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in range(0,n) %}
-                    <tr>
-                        <td>{{logs[i][0]}}</td>
-                        <td>{{logs[i][2]}}</td>
-                        <td>{{logs[i][3]}}</td>
-                        <td>{{logs[i][6]}}</td>
-                        <td>{{logs[i][7]}}</td>
-                        <td>{{logs[i][8]}}</td>
-                        <td>{{logs[i][9]}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                </table>
-            </div>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(0,n) %}
+                <tr>
+                    <td>{{logs[i][0]}}</td>
+                    <td>{{logs[i][2]}}</td>
+                    <td>{{logs[i][3]}}</td>
+                    <td>{{logs[i][6]}}</td>
+                    <td>{{logs[i][7]}}</td>
+                    <td>{{logs[i][8]}}</td>
+                    <td>{{logs[i][9]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-{% endblock content %}   
+</div>
+{% endblock content %}

@@ -7,20 +7,21 @@
         integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link href="{{url_for('static',filename='styles/base1.css')}}" rel="stylesheet" type="text/css">
     <link href="{{url_for('static',filename='styles/base2.css')}}" rel="stylesheet" type="text/css">
-    <link rel="shortcut icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}" />
+    <link rel='shortcut icon' type='image/x-icon' href="{{url_for('static',filename='favicon.ico')}}" />
     <title>ESB Implementation</title>
 </head>
 
 <body>
     <div class="sidenav">
         <p class="center-align logo"><img src="../static/esb.png"></p>
-        <a href="{{url_for('admin_dashboard')}}">Dashboard</a>
-        <a href="{{url_for('instagram')}}">Instagram API</a>
-        <a href="{{url_for('translator')}}">Language Detection API</a>
-        <a href="{{url_for('weather')}}">Open Weather API</a>
-        <a href="{{url_for('string_reverse')}}">String Reverse API</a>
-        <a href="{{url_for('client2client')}}">Client to Client</a>
-        <a href="{{url_for('logout')}}">Logout</a>
+        <a class="btn" href="{{url_for('admin_dashboard')}}">Dashboard</a>
+        <a class="btn" href="{{url_for('instagram')}}">Instagram API</a>
+        <a class="btn" href="{{url_for('translator')}}">Language Detection API</a>
+        <a class="btn" href="{{url_for('weather')}}">Open Weather API</a>
+        <a class="btn" href="{{url_for('string_reverse')}}">String Reverse API</a>
+        <a class="btn" href="{{url_for('client2client')}}">Client to Client</a>
+        <a class="btn" href="{{url_for('logout')}}">Logout</a>
+        <a class="btn btn-danger" href="{{url_for('terminate')}}">Terminate</a>
     </div>
 
     <div>
