@@ -313,6 +313,15 @@ def user_signup():
 
     return render_template("user_signup.html", unames=unames)
 
+# user logs
+@app.route("/logs/<username>",methods=['GET','POST'])
+def user_logs(username):
+    cursor = mysql.connection.cursor()
+    # fetching all logs of that user from AckLogs table so that they can be shown on admin dashboard
+    cursor.execute("SELECT * from AckLogs where Username = %s",(str(username),))
+    user_logs = cursor.fetchall()
+    print(user_logs)
+    return render_template("logs.html",logs=user_logs,n=len(user_logs))
 
 # route for logging out
 @app.route("/logout")
@@ -535,12 +544,13 @@ def check_update_client(username):
         print("in app.py before select")
         print("in app.py request")
         cursor.execute(
-            "SELECT RequestID, Response from Pending where Receiver = %s",
+            "SELECT RequestID,Response,Username from Pending where Receiver = %s",
             (username, ))
         if cursor.rowcount > 0:
             local = cursor.fetchall()[0]
             requestID = local[0]
             message = local[1]
+            username2 = local[2]
             print("in app.py", message)
             print("in app.py before delete")
             cursor.execute(
@@ -548,6 +558,7 @@ def check_update_client(username):
             mysql.connection.commit()
             out = {}
             out["message"] = message
+            out["username"] = username2
             out = json.dumps(out)
             return out
         out = {"incomplete": "absent"}

@@ -60,11 +60,11 @@
                     // out.innerHTML = data["message"];
                     if ("incomplete" in data) {
                         console.log("in the if part")
-                        out.innerHTML = previous + "\nWaiting for response..."
+                        out.innerHTML = previous + `<br>Waiting for messages...`
                     } else {
                         console.log("in the else part")
-                        previous += "\n" + data["message"]
-                        out.innerHTML = previous
+                        previous += `<b>` + data["username"] +`</b>` + ` says ` + data["message"] +`<br>`;
+                        out.innerHTML = previous;
                         // check =1 false // break here
                     }
                 });
