@@ -62,10 +62,10 @@ sleep(5)
 mysql = MySQL()
 
 # MySQL configurations
-app.config['MYSQL_DATABASE_USER'] = 'b98a15b202597c'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'b96d5f92'
-app.config['MYSQL_DATABASE_DB'] = 'heroku_3d5cbf9b81f8210'
-app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-east-03.cleardb.com'
+app.config['MYSQL_USER'] = 'b98a15b202597c'
+app.config['MYSQL_PASSWORD'] = 'b96d5f92'
+app.config['MYSQL_DB'] = 'heroku_3d5cbf9b81f8210'
+app.config['MYSQL_HOST'] = 'us-cdbr-east-03.cleardb.com'
 mysql.init_app(app)
 
 # Admin Credentials : FIXED
