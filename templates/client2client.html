@@ -45,10 +45,11 @@
     ID = "{{ username }}"
     console.log(ID)
     var previous = ""
+    var timer = 0;
     async function check_updates() {
         while (true) {
             console.log(ID)
-            await new Promise(r => setTimeout(r, 2000));
+            await new Promise(r => setTimeout(r, timer));
             await fetch(`/check_update_client/${ID}`, {
                 method: 'POST',
                 headers: {
@@ -61,10 +62,12 @@
                     if ("incomplete" in data) {
                         console.log("in the if part")
                         out.innerHTML = previous + "\nWaiting for response..."
+                        timer = 2000;
                     } else {
                         console.log("in the else part")
                         previous += "\n" + data["message"]
                         out.innerHTML = previous
+                        timer = 10
                         // check =1 false // break here
                     }
                 });
