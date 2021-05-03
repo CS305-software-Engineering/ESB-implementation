@@ -19,7 +19,7 @@ port_numbers = {
     "instagram": 6001,
     "weather": 6002,
     "translate": 6003,
-    "reverse": 6004
+    "reverse": 6004,
     # "C2C": 6005
 }
 
@@ -40,16 +40,15 @@ while running:
     print(msg)
     if msg == "terminate":
         conn_s2a.close()
-        continue
-            # running = False
+        running = False
 
-            # for conn in conn_a2pq.values():
-            #     conn.send("terminate")
-            #     print(f"terminate adapter {listener_port}")
-            #     # time.sleep(10)
-            #     conn.close()  # close the subsequent connections to pqs
+        for conn in conn_a2pq.values():
+            conn.send("terminate")
+            print(f"terminate adapter {listener_port}")
+            # time.sleep(10)
+            conn.close()  # close the subsequent connections to pqs
 
-            # break
+        # break
 
         # data is a json object
     data = json.loads(msg)  # parse the string

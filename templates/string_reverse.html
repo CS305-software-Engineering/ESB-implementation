@@ -16,24 +16,36 @@
 </div>
 <script>
     var out = document.getElementById("out")
-    ID = {{reqID}}
+    ID = {{ reqID }}
+    var check = {{ check }}
     console.log(ID)
-    async function check_updates(){
-        while(1){
+    async function check_updates() {
+        while (1 && check) {
             console.log(ID)
             await new Promise(r => setTimeout(r, 2000));
             await fetch(`/check_update/${ID}`, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': 'application/json'
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    out.innerHTML = data["reversed_string"];
+                    if ("status" in data) {
+                        console.log("in the if part")
+                        out.innerHTML = "Waiting for response..."
+                    } else {
+                        console.log("in the else part")
+                        out.innerHTML = data["reversed_string"]
+                        check = false // break here
+                    }
+                });
+            if (check == false) {
+                break;
             }
-        }).then(response => response.json())
-        .then(data => {
-            out.innerHTML = data["reversed_string"];
-        });
         }
     };
     check_updates();
 </script>
-{% endblock content %} 
+{% endblock content %}

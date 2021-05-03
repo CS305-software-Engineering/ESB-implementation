@@ -51,8 +51,10 @@ create table if not EXISTS Pending(
 	-- API name / Receiver client
 	RequestPayload text not null,
 	-- if text then include, for file transfer use the file name
-	InitialTimestamp timestamp not null
+	InitialTimestamp timestamp not null,
 	-- time when request arrives at the HTTP server from a user client
+	Response text not null
+	-- the response from the API or C2C communication
 );
 
 create table if not EXISTS Variables(

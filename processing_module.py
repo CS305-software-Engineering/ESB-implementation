@@ -10,8 +10,8 @@ input_ports = {
     "instagram": 8001,
     "weather": 8002,
     "translate": 8003,
-    "reverse": 8004
-    # "c2c": 8005
+    "reverse": 8004,
+    # "C2C": 8005
 }
 
 processor_port = int(sys.argv[1])

@@ -75,16 +75,17 @@ while running:
     try:
         cur = conn.cursor()
         cur.execute(
-            'INSERT into Pending(RequestID,Username,Receiver,RequestPayload,InitialTimestamp) values(%s,%s,%s,%s,%s)',
+            'INSERT into Pending(RequestID,Username,Receiver,RequestPayload,InitialTimestamp,Response) values(%s,%s,%s,%s,%s,%s)',
             (str(reqID), str(username), str(receiver), str(message),
-             initial_timestamp))
+             initial_timestamp, str(response)))
         conn.commit()
         print("wrote to Pending")
 
         cur.execute(
             'INSERT into AckLogs(RequestID,Username,TypeofRequest,Receiver,RequestPayload,Response,InitialTimestamp,FinalTimestamp,ServiceResponseStatus,ReturnResponseStatus) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
             (str(reqID), str(username), str(typeofreq), str(receiver),
-             str(message),str(response), initial_timestamp, final_timestamp, 200, 200))
+             str(message), str(response), initial_timestamp, final_timestamp,
+             200, 200))
         conn.commit()
         print("wrote to AckLogs")
     except Exception as exp:

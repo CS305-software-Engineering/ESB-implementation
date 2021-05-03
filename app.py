@@ -74,6 +74,7 @@ bcrypt = Bcrypt(app)
 # ROUTES
 reqID = 0
 
+
 def get_next_reqID():
     global reqID
     cursor = mysql.connection.cursor()
@@ -83,6 +84,7 @@ def get_next_reqID():
     cursor.execute(f'update Variables set RequestID={reqID + 1};')
     mysql.connection.commit()
     cursor.close()
+
 
 # very first page of the ESB - login for admins
 @app.route("/", methods=['GET', 'POST'])
@@ -345,12 +347,18 @@ def string_reverse():
                                out=out,
                                filename=filename,
                                username=session["username"],
-                               reqID = local_reqid)
+                               reqID=local_reqid,
+                               check=1)
     return render_template("string_reverse.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
-                           reqID = 0)
+                           reqID=0,
+                           check=0)
+    # check variable is added to tell whether constant updating from the database is needed or not
+    # if check is true then it will ask for data from pending table
+    # this will be true when the user has sent a request
+    # if check is false then this is the intial state fo the page
 
 
 # instagram API
@@ -373,8 +381,8 @@ def instagram():
         global reqID
         local_reqid = reqID
         string = request.form["string"]
-        RequestSender(session["username"], "instagram", string, get_curr_time(),
-                      local_reqid)
+        RequestSender(session["username"], "instagram", string,
+                      get_curr_time(), local_reqid)
 
         out = "Request Sent!"
         # if "status" in json_dict and json_dict["status"] == "fail":
@@ -394,7 +402,7 @@ def instagram():
                                filename=filename,
                                username=session["username"],
                                flag=flag,
-                               reqID = local_reqid)
+                               reqID=local_reqid)
     return render_template("insta.html",
                            out=out,
                            filename=filename,
@@ -472,21 +480,21 @@ def translator():
         global reqID
         local_reqid = reqID
         string = request.form["string"]
-        RequestSender(session["username"], "translate", string, get_curr_time(),
-                      local_reqid)
+        RequestSender(session["username"], "translate", string,
+                      get_curr_time(), local_reqid)
         out = "Request Sent!"
         return render_template("detect.html",
                                out=out,
                                filename=filename,
                                username=session["username"],
                                flag=flag,
-                               reqID = local_reqid)
+                               reqID=local_reqid)
     return render_template("detect.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
                            flag=flag,
-                           reqID = 0)
+                           reqID=0)
 
 
 @app.route('/client2client', methods=['GET', 'POST'])
@@ -524,17 +532,21 @@ def client2client():
 
 
 # for a particular requesID the client will ping this route to check for any available updates
-@app.route('/check_update/<ID>',methods=['GET', 'POST'])
+@app.route('/check_update/<ID>', methods=['GET', 'POST'])
 def check_update(ID):
     if request.method == 'POST':
         print("jeskfhesjfesfjdsb")
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT Response from AckLogs where RequestID = %s",(ID,))
+        cursor.execute("SELECT Response from Pending where RequestID = %s",
+                       (ID, ))
         if cursor.rowcount > 0:
             out = cursor.fetchall()[0][0]
-            print(out)
+            # print(out)
+            cursor.execute(f"DELETE from Pending where RequestID = {ID}")
+            mysql.connection.commit()
             return out
-        out = {"reversed_string" : "Waiting for response..."}
+        out = {"reversed_string": "$", "status": "absent"}
+        # status is added to convey that the data is not yet present
         return out
 
 
