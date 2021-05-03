@@ -20,23 +20,12 @@
     </div>
 </div>
 <script>
-    var out = document.getElementById("out")
-    ID = {{reqID}}
-    console.log(ID)
-    async function code2lang(code){
-        await fetch(`/givemelanguage/${lang_code}`, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': 'application/json'
-            }
-        }).then(response2=>response2.json())
-        .then(data2=>{
-            return data2["language"];
-        });
-    }
+    var out = document.getElementById("out");
+    var check = {{check}};
+    ID = {{reqID}};
+    console.log(ID);
     async function check_updates(){
-        while(1){
+        while(1 && check){
             console.log(ID);
             await new Promise(r => setTimeout(r, 2000));
             await fetch(`/check_update/${ID}`, {
@@ -51,13 +40,15 @@
                 out.innerHTML = data["reversed_string"];
             }
             else{
-                
-                lang_code = data["data"]["detections"][0][0]["language"];
-                confidence = data["data"]["detections"][0][0]["confidence"];
-                lang_name = code2lang(lang_code);
-                out.innerHTML = lang_name+` Language Detected with `+confidence+` confidence.`
+                lang_name = data["language"];
+                confidence = data["confidence"];
+                out.innerHTML = lang_name+` Language Detected with `+confidence+` confidence.`;
+                check = false;
             }
         });
+        if(check == false){
+            break;
+        }
         }
     };
     check_updates();

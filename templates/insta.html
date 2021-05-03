@@ -16,10 +16,11 @@
 </div>
 <script>
     var out = document.getElementById("out")
+    var check = {{ check }}
     ID = {{reqID}}
     console.log(ID)
     async function check_updates(){
-        while(1){
+        while(1 && check){
             console.log(ID)
             await new Promise(r => setTimeout(r, 2000));
             await fetch(`/check_update/${ID}`, {
@@ -28,13 +29,11 @@
                 'Content-type': 'application/json',
                 'Accept': 'application/json'
             }
-        }).then(response => response.json())
+        }).then(response => {console.log(response);return response.json()})
         .then(data => {
+            console.log(data)
             if ("reversed_string" in data){
                 out.innerHTML = data["reversed_string"];
-            }
-            else if ("message" in data){
-                out.innerHTML = data["message"];
             }
             else if ("status" in data && data["status"] == "fail"){
                 out.innerHTML = "Oops! Profile not found";
@@ -48,16 +47,20 @@
                         </tr>
                         <tr>
                             <td>Followers</td>
-                            <td>`+data["edge_followed_by"]["count"]+`</td>
+                            <td>`+data["followers"]+`</td>
                         </tr>
                         <tr>
                             <td>Following</td>
-                            <td>`+ data["edge_follow"]["count"]+`</td>
+                            <td>`+ data["following"]+`</td>
                         </tr>
                     </tbody>
                 </table>`;
+                check = false;
             }
         });
+        if(check==false){
+            break;
+        }
         }
     };
     check_updates();

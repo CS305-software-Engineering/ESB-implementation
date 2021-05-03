@@ -391,13 +391,15 @@ def instagram():
                                filename=filename,
                                username=session["username"],
                                flag=flag,
-                               reqID=local_reqid)
+                               reqID=local_reqid,
+                               check=1)
     return render_template("insta.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
                            flag=flag,
-                           reqID=0)
+                           reqID=0,
+                           check=0)
 
 
 # weather API
@@ -416,40 +418,26 @@ def weather():
     flag = 0
     if request.method == 'POST':
         flag = 1
+        get_next_reqID()
+        global reqID
+        local_reqid = reqID
         string = request.form["string"]
-        # this function is implemented in rapidapi.py file
-        str_out = weather_api(string)
-        print(str_out)
-        if (str_out[0] == 't'):
-            str_out = str_out[4:]
-        else:
-            out = "Oops! City not found"
-            flag = 0
-            return render_template("weather.html",
-                                   out=out,
-                                   filename=filename,
-                                   username=session["username"],
-                                   flag=flag)
-        json_dict = ast.literal_eval(str_out)
-        out = []
-        out.append(json_dict["weather"][0]["main"])
-        out.append(json_dict["weather"][0]["description"])
-        out.append(json_dict["main"]["temp"])
-        out.append(json_dict["main"]["feels_like"])
-        out.append(json_dict["main"]["temp_min"])
-        out.append(json_dict["main"]["temp_max"])
-        out.append(json_dict["main"]["pressure"])
-        out.append(json_dict["main"]["humidity"])
+        RequestSender(session["username"], "instagram", string,
+                      get_curr_time(), local_reqid)
+
+        out = "Request Sent!"
         return render_template("weather.html",
                                out=out,
                                filename=filename,
                                username=session["username"],
-                               flag=flag)
+                               flag=flag,
+                               check=1)
     return render_template("weather.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
-                           flag=flag)
+                           flag=flag,
+                           check=0)
 
 # helper 
 @app.route("/givemelanguage/<code>", methods=['GET', 'POST'])
@@ -489,13 +477,15 @@ def translator():
                                filename=filename,
                                username=session["username"],
                                flag=flag,
-                               reqID=local_reqid)
+                               reqID=local_reqid,
+                               check=1)
     return render_template("detect.html",
                            out=out,
                            filename=filename,
                            username=session["username"],
                            flag=flag,
-                           reqID=0)
+                           reqID=0,
+                           check=0)
 
 
 @app.route('/client2client', methods=['GET', 'POST'])
@@ -536,13 +526,12 @@ def client2client():
 @app.route('/check_update/<ID>', methods=['GET', 'POST'])
 def check_update(ID):
     if request.method == 'POST':
-        print("jeskfhesjfesfjdsb")
         cursor = mysql.connection.cursor()
         cursor.execute("SELECT Response from Pending where RequestID = %s",
                        (ID, ))
         if cursor.rowcount > 0:
             out = cursor.fetchall()[0][0]
-            # print(out)
+            print(out)
             cursor.execute(f"DELETE from Pending where RequestID = {ID}")
             mysql.connection.commit()
             return out
