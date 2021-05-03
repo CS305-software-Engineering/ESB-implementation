@@ -88,6 +88,7 @@ while running:
              200, 200))
         conn.commit()
         print("wrote to AckLogs")
+        cur.close()
     except Exception as exp:
         print("unable to write to db")
         print(exp)

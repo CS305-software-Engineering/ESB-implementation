@@ -33,7 +33,7 @@ def weather_api(city):
     conn = http.client.HTTPSConnection("community-open-weather-map.p.rapidapi.com")
     # RAPIDAPI CREDENTIALS
     headers = {
-        'x-rapidapi-key': str(WEATHER_API_KEY),
+        'x-rapidapi-key': WEATHER_API_KEY,
         'x-rapidapi-host': "community-open-weather-map.p.rapidapi.com"
     }
     # prepare the input as accepted by API
@@ -55,9 +55,10 @@ def insta_api(username):
     conn = http.client.HTTPSConnection("instagram40.p.rapidapi.com")
     # RAPIDAPI CREDENTIALS
     headers = {
-        'x-rapidapi-key': str(INSTA_API_KEY),
+        'x-rapidapi-key': INSTA_API_KEY,
         'x-rapidapi-host': "instagram40.p.rapidapi.com"
     }
+    
     # prepare the input as accepted by API
     ip = "/account-info?username=" + str(username)
     # request the output
@@ -93,3 +94,4 @@ def translate_api(payload):
     status=res.status
     # return the response
     return data.decode("utf-8")
+print(translate_api("kese ho"))

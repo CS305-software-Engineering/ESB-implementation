@@ -1,5 +1,4 @@
 # importing helper libraries
-from typing import final
 from flask import Flask, render_template, url_for, flash, redirect, request, session, jsonify, send_file, Response
 from rapidapi import str_rev_api, translate_api, weather_api, insta_api
 from utils import *
@@ -387,18 +386,6 @@ def instagram():
                       get_curr_time(), local_reqid)
 
         out = "Request Sent!"
-        # if "status" in json_dict and json_dict["status"] == "fail":
-        #     flag = 0
-        #     out = "Oops! Profile not found"
-        #     return render_template("insta.html",
-        #                            out=out,
-        #                            filename=filename,
-        #                            username=session["username"],
-        #                            flag=flag)
-        # bio = json_dict["biography"]
-        # followers = json_dict["edge_followed_by"]["count"]
-        # following = json_dict["edge_follow"]["count"]
-        # out = [bio, followers, following]
         return render_template("insta.html",
                                out=out,
                                filename=filename,
@@ -432,6 +419,7 @@ def weather():
         string = request.form["string"]
         # this function is implemented in rapidapi.py file
         str_out = weather_api(string)
+        print(str_out)
         if (str_out[0] == 't'):
             str_out = str_out[4:]
         else:
@@ -463,7 +451,18 @@ def weather():
                            username=session["username"],
                            flag=flag)
 
-
+# helper 
+@app.route("/givemelanguage/<code>", methods=['GET', 'POST'])
+def givemelang(code):
+    if request.method == 'POST':
+        f = open('static/languages_codes.json')
+        data = json.load(f)
+        for i in data["code2lang"]:
+            if (i["alpha2"] == code):
+                lang_name = i["English"]
+                break
+        return {"language":lang_name}
+    
 # Google Translate API
 @app.route("/translator", methods=['GET', 'POST'])
 def translator():

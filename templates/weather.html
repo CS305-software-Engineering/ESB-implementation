@@ -10,10 +10,8 @@
             <button type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div class="output">
-        {% if flag == 0 %}
-            {{out}}
-        {% endif %}
+    <div id="out" class="output">
+        {{out}}
         {% if flag == 1 %}
         {{out[0]}}, {{out[1]}}
         <table class="table">
@@ -47,4 +45,37 @@
         {% endif %}
     </div>
 </div>
+<script>
+    var out = document.getElementById("out")
+    var ID = {{ reqID }}
+    var check = true;
+    console.log(ID)
+    async function check_updates() {
+        while (1 && check) {
+            console.log(ID)
+            await new Promise(r => setTimeout(r, 2000));
+            await fetch(`/check_update/${ID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    out.innerHTML = data["reversed_string"];
+                    if ("status" in data) {
+                        console.log("in the if part")
+                        out.innerHTML = "Waiting for response..."
+                    } else {
+                        out.innerHTML = data;
+                        check = false // break here
+                    }
+                });
+            if (check == false) {
+                break;
+            }
+        }
+    };
+    check_updates();
+</script>
 {% endblock content %}     

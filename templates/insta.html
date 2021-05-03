@@ -31,7 +31,10 @@
         }).then(response => response.json())
         .then(data => {
             if ("reversed_string" in data){
-                out.innerHTML = data["reversed_string"]
+                out.innerHTML = data["reversed_string"];
+            }
+            else if ("message" in data){
+                out.innerHTML = data["message"];
             }
             else if ("status" in data && data["status"] == "fail"){
                 out.innerHTML = "Oops! Profile not found";
@@ -52,7 +55,7 @@
                             <td>`+ data["edge_follow"]["count"]+`</td>
                         </tr>
                     </tbody>
-                </table>`
+                </table>`;
             }
         });
         }

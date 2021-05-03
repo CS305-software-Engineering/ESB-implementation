@@ -10,7 +10,7 @@
             <button type="submit" class="btn btn-outline-info">Send</button>
         </div>
     </form>
-    <div class="output">
+    <div id="out" class="output">
         {% if flag == 0 %}
             {{out}}
         {% endif %}
@@ -19,13 +19,22 @@
         {% endif %}
     </div>
 </div>
-<script type="text/javascript" src="{{url_for('static',filename='languages_codes.json')}}"></script>
 <script>
     var out = document.getElementById("out")
-    var mydata = require('static/languages_codes.json');
-    console.log(mydata)
     ID = {{reqID}}
     console.log(ID)
+    async function code2lang(code){
+        await fetch(`/givemelanguage/${lang_code}`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).then(response2=>response2.json())
+        .then(data2=>{
+            return data2["language"];
+        });
+    }
     async function check_updates(){
         while(1){
             console.log(ID);
@@ -42,15 +51,10 @@
                 out.innerHTML = data["reversed_string"];
             }
             else{
-                var lang_code = data["data"]["detections"][0][0]["language"];
-                var lang_name = "";
-                var confidence = data["data"]["detections"][0][0]["confidence"]
-                for(var i=0;i<mydata["code2lang"].length;i++){
-                    if(mydata["code2lang"][i]["alpha2"] == lang_code){
-                        lang_name = mydata["code2lang"][i]["English"];
-                        break;
-                    }
-                }
+                
+                lang_code = data["data"]["detections"][0][0]["language"];
+                confidence = data["data"]["detections"][0][0]["confidence"];
+                lang_name = code2lang(lang_code);
                 out.innerHTML = lang_name+` Language Detected with `+confidence+` confidence.`
             }
         });
