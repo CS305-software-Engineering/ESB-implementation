@@ -45,7 +45,7 @@ mail = Mail(app)
 
 sleep(5)
 # DATABASE CONNECTION
-##GCP
+# GCP
 # config = {
 #     'user': 'root',
 #     'password': 'root',
@@ -58,13 +58,15 @@ sleep(5)
 # }
 # cnxn = mysql.connector.connect(**config)
 
-##LOCAL
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = str(MYSQL_PASSWORD)
-app.config['MYSQL_DB'] = str(MYSQL_DB)
+# LOCAL
+mysql = MySQL()
 
-mysql = MySQL(app)
+# MySQL configurations
+app.config['MYSQL_USER'] = 'b98a15b202597c'
+app.config['MYSQL_PASSWORD'] = 'b96d5f92'
+app.config['MYSQL_DB'] = 'heroku_3d5cbf9b81f8210'
+app.config['MYSQL_HOST'] = 'us-cdbr-east-03.cleardb.com'
+mysql.init_app(app)
 
 # Admin Credentials : FIXED
 admin = {}
@@ -337,7 +339,7 @@ def logout():
 
 
 # ROUTES FOR API CALLS
-## string reverse API
+# string reverse API
 
 
 @app.route("/string_reverse", methods=['GET', 'POST'])
@@ -598,7 +600,7 @@ def shutdown_server():
 def terminate():
     try:
         if "username" in session and session["username"] == admin["username"]:
-            Terminator()  #this will terminate the pipeline
+            Terminator()  # this will terminate the pipeline
             return "terminated"
         else:
             return "not allowed"
