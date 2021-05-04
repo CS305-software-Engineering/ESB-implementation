@@ -6,7 +6,11 @@
             <form action="{{url_for('client2client')}}" method='POST'>
                 <div class="form-group m-3">
                     <label for="string">Enter the Username of Client</label><br>
-                    <input type="text" name="string" id="string" placeholder="Username">
+                    <select id="cars" name="cars">
+                        {% for name in online_users %}
+                        <option value="{{name}}">{{name}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group m-3">
                     <label for="string">Enter the Message</label><br>
