@@ -34,6 +34,10 @@
                     if ("incomplete" in data) {
                         out.innerHTML = "Waiting for response..."
                     }
+                    else if ("status" in data && data["status"] == "unauthorized"){
+                        out.innerHTML = "Unauthorized Request!"
+                        check = false;
+                    }
                     else {
                         lang_name = data["language"];
                         confidence = data["confidence"];

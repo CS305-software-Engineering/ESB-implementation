@@ -18,9 +18,9 @@ def connect():
     """ Connect to MySQL database """
     conn = None
     try:
-        conn = mysql.connector.connect(host='localhost',
+        conn = mysql.connector.connect(host='us-cdbr-east-03.cleardb.com',
                                        database=str(MYSQL_DB),
-                                       user='root',
+                                       user='b98a15b202597c',
                                        password=str(MYSQL_PASSWORD))
         if conn.is_connected():
             print('Connected to MySQL database')
@@ -74,12 +74,16 @@ while running:
     # print("in dispatcher", response2[5:-1])
     # response1 = json.loads(response2[5:-1])
     # response = {}
-
+    service_resp = 200
     if receiver == "instagram":
         response1 = json.loads(response2)
         response = {}
         if "status" in response1 and response1["status"] == "fail":
             response = json.dumps({"status": "fail"})
+            service_resp = 404
+        elif "message" in response1:
+            response = json.dumps({"status": "unauthorized"})
+            service_resp = 401
         else:
             bio = response1["biography"]
             followers = response1["edge_followed_by"]["count"]
@@ -93,22 +97,25 @@ while running:
     elif receiver == "translate":
         response1 = json.loads(response2)
         response = {}
-        lang_code = response1["data"]["detections"][0][0]["language"]
-        confidence = response1["data"]["detections"][0][0]["confidence"]
-        f = open('static/languages_codes.json')
-        data = json.load(f)
-        lang_name = ""
-        for i in data["code2lang"]:
-            if (i["alpha2"] == lang_code):
-                lang_name = i["English"]
-                break
-        response = json.dumps({
-            "language": lang_name,
-            "confidence": confidence
-        })
+        if "message" in response1:
+            response = json.dumps({"status": "unauthorized"})
+            service_resp = 401
+        else:
+            lang_code = response1["data"]["detections"][0][0]["language"]
+            confidence = response1["data"]["detections"][0][0]["confidence"]
+            f = open('static/languages_codes.json')
+            data = json.load(f)
+            lang_name = ""
+            for i in data["code2lang"]:
+                if (i["alpha2"] == lang_code):
+                    lang_name = i["English"]
+                    break
+            response = json.dumps({
+                "language": lang_name,
+                "confidence": confidence
+            })
 
     elif receiver == "weather":
-        response1 = json.loads(response2[5:-1])
         response = {}
         if (response2[0] == 't'):
             str_out = response2[5:-1]
@@ -133,7 +140,14 @@ while running:
                 "humidity": out[7]
             })
         else:
-            response = json.dumps({"message": "OOPS! City not found"})
+            response1 = json.loads(response2)
+            if "message" in response1:
+                response = json.dumps({"message": "unauthorized"})
+                service_resp = 401
+            else:
+                response = json.dumps({"message": "OOPS! City not found"})
+                service_resp = 404
+            
     elif receiver == "reverse":
         response = response2
 
@@ -154,7 +168,7 @@ while running:
             'INSERT into AckLogs(RequestID,Username,TypeofRequest,Receiver,RequestPayload,Response,InitialTimestamp,FinalTimestamp,ServiceResponseStatus,ReturnResponseStatus) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
             (str(reqID), str(username), str(typeofreq), str(receiver),
              str(message), str(response), initial_timestamp, final_timestamp,
-             200, 0))
+             service_resp, 0))
         conn.commit()
 
         cur.execute(

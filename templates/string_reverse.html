@@ -31,12 +31,9 @@
                 }
             }).then(response => response.json())
                 .then(data => {
-                    out.innerHTML = data["reversed_string"];
                     if ("incomplete" in data) {
-                        console.log("in the if part")
                         out.innerHTML = "Waiting for response..."
                     } else {
-                        console.log("in the else part")
                         out.innerHTML = data["reversed_string"]
                         check = false // break here
                     }

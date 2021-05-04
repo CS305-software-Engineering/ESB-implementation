@@ -37,6 +37,11 @@
                     }
                     else if ("status" in data && data["status"] == "fail") {
                         out.innerHTML = "Oops! Profile not found";
+                        check = false;
+                    }
+                    else if ("status" in data && data["status"] == "unauthorized") {
+                        out.innerHTML = "Unauthorized Request!";
+                        check = false;
                     }
                     else {
                         out.innerHTML = `<table class="table">

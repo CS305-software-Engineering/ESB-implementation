@@ -38,6 +38,7 @@
                     }
                     else if ("message" in data) {
                         out.innerHTML = data["message"]
+                        check = false 
                     }
                     else {
                         out.innerHTML = data["main"] + `  ` + data["desc"] + `<table class="table">

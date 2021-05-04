@@ -3,16 +3,17 @@
     <div class="main">
         <div class="row">
             <div class="col-md-4"></div>
+            <div class="col-md-5"></div>
             <div class="col-md-1">
-                <a id="logs-btn" class="active" onclick="return manageLogs()" href="#">Logs</a>
+                <a id="logs-btn" class="active btn btn-outline-warning" onclick="return manageLogs()" href="#">Logs</a>
             </div>
-            <div class="col-md-1">
-                <a id="manage-btn" onclick="return manageUsers()" href="#">Manage Users</a>
+            <div class="col-md-2">
+                <a id="manage-btn" class="btn btn-outline-warning" onclick="return manageUsers()" href="#">Manage Users</a>
             </div>
-            <div class="col-md-4"></div>
         </div>
         <div id="logs" >
-                <p>Logs</p>
+            <br><br>
+                <p style="text-align: center;font-size:50px">Logs</p>
                 <table class="table">
                     <thead>
                         <tr>
@@ -29,21 +30,21 @@
                     <tbody>
                         {% for i in range(0,n) %}
                         <tr>
-                            <td>{{logs[i][0]}}</td>
-                            <td>{{logs[i][1]}}</td>
-                            <td>{{logs[i][2]}}</td>
-                            <td>{{logs[i][3]}}</td>
-                            <td>{{logs[i][6]}}</td>
-                            <td>{{logs[i][7]}}</td>
-                            <td>{{logs[i][8]}}</td>
-                            <td>{{logs[i][9]}}</td>
+                            <td>{{logs[n-1-i][0]}}</td>
+                            <td>{{logs[n-1-i][1]}}</td>
+                            <td>{{logs[n-1-i][2]}}</td>
+                            <td>{{logs[n-1-i][3]}}</td>
+                            <td>{{logs[n-1-i][6]}}</td>
+                            <td>{{logs[n-1-i][7]}}</td>
+                            <td>{{logs[n-1-i][8]}}</td>
+                            <td>{{logs[n-1-i][9]}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                     </table>
                 </div>
                 <div id="manage-users" style="display: none;">
-                    <p>Pending Requests</p>
+                    <p style="text-align: center;font-size:50px">Pending Requests</p>
                     <table class="table">
                         <thead>
                             <tr>
