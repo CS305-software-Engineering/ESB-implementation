@@ -1,0 +1,13 @@
+#! /usr/bin/bash
+
+before_port=9000
+after_port=9001
+
+
+# start the shells
+(python3 before.py $before_port) &
+(python3 priority_queue.py $before_port $after_port) &
+(python3 after.py $after_port)
+
+
+wait
