@@ -16,4 +16,4 @@ The project consists of the implementation of an Enterprise Service Bus that fac
     4. Run "show tables;" command to check if all three tables are there.
     5. Use your mysql password in line 44 of app.py 
 2. run pip3 install -r requirements.txt
-3. run python3 app.py
+3. run start file (bash file) using "./start"
