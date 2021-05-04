@@ -27,7 +27,7 @@ The project consists of the implementation of an Enterprise Service Bus that fac
 9. User can now use esb at http://127.0.0.1:5000/
 
 ### Deployment:
-We tried deploying on heroku, as our TA suggested us to do so after our GCP credits expired, but heroku doesnot allow Inter Process Communication, so we were not able to deploy all the functionalities, however we can use all functionalities if we host on local server.
-[click here to use ESB hosted on heroku](https://esb-implementation.herokuapp.com/)
-We can still do many functionalities like registering,checking logs, accepting pending requests, recieving messages from other clients who are using localserver to run ESB <br>
+We tried deploying on heroku, as our TA suggested us to do so after our GCP credits expired, but heroku doesnot allow Inter Process Communication, so we were not able to deploy all the functionalities, however we can use all functionalities if we host on local server.<br>
+[click here to use ESB hosted on heroku](https://esb-implementation.herokuapp.com/) <br>
+We can still use functionalities like registering,checking logs, accepting pending requests, recieving messages from other clients who are using localserver to run ESB as the database is hosted on heroku <br>
 But we cannot get API responses, we cannot send messages to other clients as this needs Inter Process Communication, which is not possible on heroku.
