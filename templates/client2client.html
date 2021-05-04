@@ -6,7 +6,7 @@
             <form action="{{url_for('client2client')}}" method='POST'>
                 <div class="form-group m-3">
                     <label for="string">Enter the Username of Client</label><br>
-                    <select id="cars" name="cars">
+                    <select id="string" name="string">
                         {% for name in online_users %}
                         <option value="{{name}}">{{name}}</option>
                         {% endfor %}
