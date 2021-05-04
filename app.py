@@ -217,7 +217,7 @@ def delete_user(username):
             msg = Message('User Confirmation',
                           sender='cs305esb@gmail.com',
                           recipients=[str(email)])
-            msg.body = "You are confirmed as a user on our ESB server. Now, you can login using the registered credentials."
+            msg.body = "You are REJECTED as a user on our ESB server. Please Try Again."
             mail.send(msg)
         except:
             print("Email did not exist anyway.")
