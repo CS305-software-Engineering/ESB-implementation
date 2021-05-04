@@ -34,14 +34,12 @@ def connect():
     #         conn.close()
 
 
-conn = connect()
-
 time.sleep(1)
 
 # port on which processing module is sending data
 listener_port = int(sys.argv[1])
 # port on which HTTP server is listening
-http_port = int(sys.argv[2])  #! deprecated
+http_port = int(sys.argv[2])  # ! deprecated
 
 listener = Listener(('localhost', listener_port), authkey=b'secret password')
 # sender = Client(('localhost', http_port), authkey=b'secret password')
@@ -147,7 +145,7 @@ while running:
             else:
                 response = json.dumps({"message": "OOPS! City not found"})
                 service_resp = 404
-            
+
     elif receiver == "reverse":
         response = response2
 
@@ -155,6 +153,8 @@ while running:
         response = response2
 
     try:
+        conn = connect()
+
         # time.sleep(5) # to demonstrate the usage of fetching resulst in API calling
         cur = conn.cursor()
         cur.execute(
