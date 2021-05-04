@@ -40,7 +40,7 @@ def weather_api(city):
     # prepare the input as accepted by API
     ip = "/weather?q=" + str(
         city
-    ) + "%2Cuk&lat=0&lon=0&callback=test&id=2172797&lang=null&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html"
+    ) + "%2C&lat=0&lon=0&callback=test&id=2172797&lang=null&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html"
     # request the output
     conn.request("GET", ip, headers=headers)
     # Store the response and read it
